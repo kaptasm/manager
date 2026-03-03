@@ -6,73 +6,126 @@
 <title>Mark Életszervező</title>
 
 <style>
-body {
+body{
+    margin:0;
     font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f6f9;
+    background:#f1f5f9;
 }
 
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 15px;
-    text-align: center;
+header{
+    background:#0f172a;
+    color:white;
+    padding:15px;
+    text-align:center;
 }
 
-.container {
-    padding: 15px;
-    max-width: 1200px;
-    margin: auto;
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    background:#1e293b;
 }
 
-.section {
-    background: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+nav button{
+    flex:1;
+    padding:12px;
+    border:none;
+    background:#1e293b;
+    color:white;
+    cursor:pointer;
 }
 
-.section h2 {
-    margin-top: 0;
+nav button:hover{
+    background:#334155;
 }
 
-input, select, button {
-    padding: 8px;
-    margin: 5px 0;
-    width: 100%;
-    box-sizing: border-box;
+.container{
+    padding:20px;
+    max-width:1200px;
+    margin:auto;
 }
 
-button {
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+.section{
+    display:none;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-button:hover {
-    background: #2980b9;
+.active{
+    display:block;
 }
 
-.event {
-    padding: 8px;
-    margin: 5px 0;
-    border-left: 5px solid #3498db;
-    background: #ecf0f1;
-    border-radius: 6px;
+input, select, button{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+    box-sizing:border-box;
 }
 
-.highlight {
-    border-left-color: red;
+.addBtn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
 }
 
-@media(min-width: 768px){
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
+.event{
+    background:#e2e8f0;
+    padding:6px;
+    margin:4px 0;
+    border-left:4px solid #2563eb;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.highlightEvent{
+    background:#ffe4e6;
+    border-left:6px solid #dc2626;
+    font-weight:bold;
+}
+
+footer{
+    background:#0f172a;
+    color:white;
+    text-align:center;
+    padding:10px;
+    margin-top:30px;
+}
+
+/* NAPTÁR */
+.calendar{
+    display:grid;
+    grid-template-columns: repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    min-height:100px;
+    background:#f8fafc;
+    padding:5px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.today{
+    border:2px solid #2563eb;
+}
+
+.dayNumber{
+    font-weight:bold;
+}
+
+.calendarHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+@media(max-width:600px){
+    .calendar{
+        grid-template-columns: repeat(2,1fr);
     }
 }
 </style>
@@ -80,117 +133,199 @@ button:hover {
 <body>
 
 <header>
-    <h1>📅 Mark Életszervező</h1>
+<h1>📅 Mark Életszervező</h1>
 </header>
+
+<nav>
+<button onclick="showSection('today')">Ma</button>
+<button onclick="showSection('calendar')">Havi Naptár</button>
+<button onclick="showSection('regular')">Rendszeres</button>
+<button onclick="showSection('school')">Iskola</button>
+<button onclick="showSection('afternoon')">Délután</button>
+<button onclick="showSection('highlight')">Kiemelt</button>
+</nav>
 
 <div class="container">
 
-<div class="grid">
+<div id="today" class="section active">
+<h2>Mai programok</h2>
+<div id="todayList"></div>
+</div>
 
-<div class="section">
-<h2>🔁 Rendszeres Program</h2>
-<input type="text" id="regName" placeholder="Program neve">
-<input type="datetime-local" id="regDate">
-<select id="repeat">
+<div id="calendar" class="section">
+<div class="calendarHeader">
+<button onclick="changeMonth(-1)">◀</button>
+<h2 id="monthTitle"></h2>
+<button onclick="changeMonth(1)">▶</button>
+</div>
+<div class="calendar" id="calendarGrid"></div>
+</div>
+
+<!-- A többi rész változatlan logikával -->
+
+<div id="regular" class="section">
+<h2>Rendszeres</h2>
+<input type="text" id="regularName">
+<input type="datetime-local" id="regularDate">
+<select id="regularRepeat">
 <option value="none">Nem ismétlődik</option>
 <option value="weekly">Hetente</option>
 <option value="monthly">Havonta</option>
 </select>
-<label><input type="checkbox" id="regReminder"> 20 perces email emlékeztető</label>
-<button onclick="addEvent('regular')">Hozzáadás</button>
+<button class="addBtn" onclick="addEvent('regular')">Hozzáadás</button>
 <div id="regularList"></div>
 </div>
 
-<div class="section">
-<h2>📝 Dolgozat / Iskola</h2>
-<input type="text" id="schoolName" placeholder="Esemény neve">
+<div id="school" class="section">
+<h2>Iskola</h2>
+<input type="text" id="schoolName">
 <input type="datetime-local" id="schoolDate">
-<label><input type="checkbox" id="schoolReminder"> 20 perces email emlékeztető</label>
-<button onclick="addEvent('school')">Hozzáadás</button>
+<button class="addBtn" onclick="addEvent('school')">Hozzáadás</button>
 <div id="schoolList"></div>
 </div>
 
-<div class="section">
-<h2>🌆 Egyéb Délután</h2>
-<input type="text" id="afternoonName" placeholder="Program neve">
+<div id="afternoon" class="section">
+<h2>Délután</h2>
+<input type="text" id="afternoonName">
 <input type="datetime-local" id="afternoonDate">
-<label><input type="checkbox" id="afternoonReminder"> 20 perces email emlékeztető</label>
-<button onclick="addEvent('afternoon')">Hozzáadás</button>
+<button class="addBtn" onclick="addEvent('afternoon')">Hozzáadás</button>
 <div id="afternoonList"></div>
 </div>
 
-<div class="section">
-<h2>⭐ Kiemelt</h2>
-<input type="text" id="highlightName" placeholder="Program neve">
+<div id="highlight" class="section">
+<h2>Kiemelt</h2>
+<input type="text" id="highlightName">
 <input type="datetime-local" id="highlightDate">
-<label><input type="checkbox" id="highlightReminder"> 20 perces email emlékeztető</label>
-<button onclick="addEvent('highlight')">Hozzáadás</button>
+<button class="addBtn" onclick="addEvent('highlight')">Hozzáadás</button>
 <div id="highlightList"></div>
 </div>
 
 </div>
-</div>
+
+<footer>
+© 2026 Mark Életszervező
+</footer>
 
 <script>
-let events = [];
 
-function addEvent(type) {
+let events = JSON.parse(localStorage.getItem("events")) || [];
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+function saveEvents(){
+    localStorage.setItem("events", JSON.stringify(events));
+}
+
+function showSection(id){
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    render();
+}
+
+function addEvent(type){
 
     let name = document.getElementById(type+"Name").value;
     let date = document.getElementById(type+"Date").value;
-    let reminder = document.getElementById(type+"Reminder").checked;
-    let repeat = document.getElementById("repeat") ? document.getElementById("repeat").value : "none";
+    let repeat = document.getElementById(type+"Repeat") ? document.getElementById(type+"Repeat").value : "none";
 
-    if (!name || !date) {
+    if(!name || !date){
         alert("Tölts ki minden mezőt!");
         return;
     }
 
-    // Ütközés ellenőrzés
-    for (let e of events) {
-        if (e.date === date) {
-            alert("⚠️ Már van program ebben az időpontban!");
-            return;
-        }
+    if(events.some(e => e.date === date)){
+        alert("⚠️ Ütközés van ebben az időpontban!");
+        return;
     }
 
-    let newEvent = { name, date, type, reminder, repeat };
-    events.push(newEvent);
-    displayEvents();
-    checkReminder(newEvent);
+    events.push({type,name,date,repeat});
+    saveEvents();
+    render();
 }
 
-function displayEvents() {
-    document.getElementById("regularList").innerHTML = "";
-    document.getElementById("schoolList").innerHTML = "";
-    document.getElementById("afternoonList").innerHTML = "";
-    document.getElementById("highlightList").innerHTML = "";
+function render(){
 
-    events.forEach(e => {
-        let div = document.createElement("div");
-        div.className = "event";
-        if (e.type === "highlight") div.classList.add("highlight");
+    let todayStr = new Date().toISOString().split("T")[0];
+    let now = new Date();
 
-        div.innerHTML = `<b>${e.name}</b><br>${e.date}`;
-
-        document.getElementById(e.type+"List").appendChild(div);
+    events = events.filter(e=>{
+        let d = new Date(e.date);
+        return !(e.repeat==="none" && d<now);
     });
+
+    saveEvents();
+
+    document.getElementById("todayList").innerHTML="";
+    ["regular","school","afternoon","highlight"].forEach(type=>{
+        document.getElementById(type+"List").innerHTML="";
+    });
+
+    events.forEach(e=>{
+        let d=new Date(e.date);
+        let dateOnly=d.toISOString().split("T")[0];
+
+        let div=document.createElement("div");
+        div.className="event";
+        if(e.type==="highlight") div.classList.add("highlightEvent");
+
+        div.innerHTML=`${e.name}<br>${d.toLocaleString()}`;
+
+        document.getElementById(e.type+"List")?.appendChild(div);
+
+        if(dateOnly===todayStr){
+            document.getElementById("todayList").appendChild(div.cloneNode(true));
+        }
+    });
+
+    renderCalendar();
 }
 
-function checkReminder(event) {
-    if (!event.reminder) return;
+function renderCalendar(){
 
-    let eventTime = new Date(event.date).getTime();
-    let reminderTime = eventTime - (20 * 60 * 1000);
-    let now = new Date().getTime();
-    let delay = reminderTime - now;
+    const grid=document.getElementById("calendarGrid");
+    grid.innerHTML="";
 
-    if (delay > 0) {
-        setTimeout(() => {
-            alert("⏰ 20 perc múlva: " + event.name);
-        }, delay);
+    const firstDay=new Date(currentYear,currentMonth,1);
+    const lastDay=new Date(currentYear,currentMonth+1,0);
+
+    document.getElementById("monthTitle").innerText=
+        firstDay.toLocaleString("hu-HU",{month:"long",year:"numeric"});
+
+    for(let i=1;i<=lastDay.getDate();i++){
+        let dayDiv=document.createElement("div");
+        dayDiv.className="day";
+
+        let today=new Date();
+        if(i===today.getDate() && currentMonth===today.getMonth() && currentYear===today.getFullYear()){
+            dayDiv.classList.add("today");
+        }
+
+        dayDiv.innerHTML=`<div class="dayNumber">${i}</div>`;
+
+        events.forEach(e=>{
+            let d=new Date(e.date);
+            if(d.getDate()===i && d.getMonth()===currentMonth && d.getFullYear()===currentYear){
+                let ev=document.createElement("div");
+                ev.className="event";
+                if(e.type==="highlight") ev.classList.add("highlightEvent");
+                ev.innerText=e.name;
+                dayDiv.appendChild(ev);
+            }
+        });
+
+        grid.appendChild(dayDiv);
     }
 }
+
+function changeMonth(direction){
+    currentMonth+=direction;
+    if(currentMonth<0){currentMonth=11;currentYear--;}
+    if(currentMonth>11){currentMonth=0;currentYear++;}
+    renderCalendar();
+}
+
+render();
+
 </script>
 
 </body>
