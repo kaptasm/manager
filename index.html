@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Életszervező</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    padding: 15px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.section {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.section h2 {
+    margin-top: 0;
+}
+
+input, select, button {
+    padding: 8px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+.event {
+    padding: 8px;
+    margin: 5px 0;
+    border-left: 5px solid #3498db;
+    background: #ecf0f1;
+    border-radius: 6px;
+}
+
+.highlight {
+    border-left-color: red;
+}
+
+@media(min-width: 768px){
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📅 Mark Életszervező</h1>
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="section">
+<h2>🔁 Rendszeres Program</h2>
+<input type="text" id="regName" placeholder="Program neve">
+<input type="datetime-local" id="regDate">
+<select id="repeat">
+<option value="none">Nem ismétlődik</option>
+<option value="weekly">Hetente</option>
+<option value="monthly">Havonta</option>
+</select>
+<label><input type="checkbox" id="regReminder"> 20 perces email emlékeztető</label>
+<button onclick="addEvent('regular')">Hozzáadás</button>
+<div id="regularList"></div>
+</div>
+
+<div class="section">
+<h2>📝 Dolgozat / Iskola</h2>
+<input type="text" id="schoolName" placeholder="Esemény neve">
+<input type="datetime-local" id="schoolDate">
+<label><input type="checkbox" id="schoolReminder"> 20 perces email emlékeztető</label>
+<button onclick="addEvent('school')">Hozzáadás</button>
+<div id="schoolList"></div>
+</div>
+
+<div class="section">
+<h2>🌆 Egyéb Délután</h2>
+<input type="text" id="afternoonName" placeholder="Program neve">
+<input type="datetime-local" id="afternoonDate">
+<label><input type="checkbox" id="afternoonReminder"> 20 perces email emlékeztető</label>
+<button onclick="addEvent('afternoon')">Hozzáadás</button>
+<div id="afternoonList"></div>
+</div>
+
+<div class="section">
+<h2>⭐ Kiemelt</h2>
+<input type="text" id="highlightName" placeholder="Program neve">
+<input type="datetime-local" id="highlightDate">
+<label><input type="checkbox" id="highlightReminder"> 20 perces email emlékeztető</label>
+<button onclick="addEvent('highlight')">Hozzáadás</button>
+<div id="highlightList"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+let events = [];
+
+function addEvent(type) {
+
+    let name = document.getElementById(type+"Name").value;
+    let date = document.getElementById(type+"Date").value;
+    let reminder = document.getElementById(type+"Reminder").checked;
+    let repeat = document.getElementById("repeat") ? document.getElementById("repeat").value : "none";
+
+    if (!name || !date) {
+        alert("Tölts ki minden mezőt!");
+        return;
+    }
+
+    // Ütközés ellenőrzés
+    for (let e of events) {
+        if (e.date === date) {
+            alert("⚠️ Már van program ebben az időpontban!");
+            return;
+        }
+    }
+
+    let newEvent = { name, date, type, reminder, repeat };
+    events.push(newEvent);
+    displayEvents();
+    checkReminder(newEvent);
+}
+
+function displayEvents() {
+    document.getElementById("regularList").innerHTML = "";
+    document.getElementById("schoolList").innerHTML = "";
+    document.getElementById("afternoonList").innerHTML = "";
+    document.getElementById("highlightList").innerHTML = "";
+
+    events.forEach(e => {
+        let div = document.createElement("div");
+        div.className = "event";
+        if (e.type === "highlight") div.classList.add("highlight");
+
+        div.innerHTML = `<b>${e.name}</b><br>${e.date}`;
+
+        document.getElementById(e.type+"List").appendChild(div);
+    });
+}
+
+function checkReminder(event) {
+    if (!event.reminder) return;
+
+    let eventTime = new Date(event.date).getTime();
+    let reminderTime = eventTime - (20 * 60 * 1000);
+    let now = new Date().getTime();
+    let delay = reminderTime - now;
+
+    if (delay > 0) {
+        setTimeout(() => {
+            alert("⏰ 20 perc múlva: " + event.name);
+        }, delay);
+    }
+}
+</script>
+
+</body>
+</html>
