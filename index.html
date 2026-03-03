@@ -6,139 +6,168 @@
 <title>Mark Életszervező</title>
 
 <style>
+:root{
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --accent:#2563eb;
+    --border:#e2e8f0;
+    --highlight:#dc2626;
+}
+
+body.dark{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --text:#f1f5f9;
+    --accent:#3b82f6;
+    --border:#334155;
+    --highlight:#ef4444;
+}
+
 body{
     margin:0;
-    font-family: Arial, sans-serif;
-    background:#f1f5f9;
+    font-family: system-ui, -apple-system, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    transition:0.3s;
 }
 
 header{
-    background:#0f172a;
-    color:white;
-    padding:15px;
+    padding:20px;
     text-align:center;
+    font-size:22px;
+    font-weight:600;
 }
 
 nav{
     display:flex;
+    justify-content:center;
     flex-wrap:wrap;
-    background:#1e293b;
+    gap:10px;
+    padding-bottom:15px;
 }
 
 nav button{
-    flex:1;
-    padding:12px;
-    border:none;
-    background:#1e293b;
-    color:white;
+    background:none;
+    border:1px solid var(--border);
+    padding:8px 14px;
+    border-radius:20px;
     cursor:pointer;
+    color:var(--text);
 }
 
 nav button:hover{
-    background:#334155;
+    border-color:var(--accent);
 }
 
 .container{
-    padding:20px;
-    max-width:1200px;
+    max-width:1100px;
     margin:auto;
+    padding:20px;
 }
 
 .section{
     display:none;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
 .active{
     display:block;
 }
 
-input, select, button{
+input, select{
     width:100%;
-    padding:8px;
-    margin:5px 0;
-    box-sizing:border-box;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
 }
 
-.addBtn{
-    background:#2563eb;
+button.addBtn{
+    background:var(--accent);
     color:white;
     border:none;
-    border-radius:6px;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
 .event{
-    background:#e2e8f0;
-    padding:6px;
-    margin:4px 0;
-    border-left:4px solid #2563eb;
-    border-radius:6px;
+    padding:8px 10px;
+    margin:6px 0;
+    border-left:3px solid var(--accent);
     font-size:14px;
 }
 
 .highlightEvent{
-    background:#ffe4e6;
-    border-left:6px solid #dc2626;
-    font-weight:bold;
-}
-
-footer{
-    background:#0f172a;
-    color:white;
-    text-align:center;
-    padding:10px;
-    margin-top:30px;
+    border-left:4px solid var(--highlight);
+    font-weight:600;
 }
 
 /* NAPTÁR */
-.calendar{
-    display:grid;
-    grid-template-columns: repeat(7,1fr);
-    gap:5px;
-}
-
-.day{
-    min-height:100px;
-    background:#f8fafc;
-    padding:5px;
-    border-radius:6px;
-    font-size:12px;
-}
-
-.today{
-    border:2px solid #2563eb;
-}
-
-.dayNumber{
-    font-weight:bold;
-}
 
 .calendarHeader{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:10px;
+    margin-bottom:15px;
 }
 
-@media(max-width:600px){
-    .calendar{
-        grid-template-columns: repeat(2,1fr);
-    }
+.calendar{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+}
+
+.day{
+    padding:8px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    min-height:90px;
+    font-size:12px;
+}
+
+.today{
+    border:2px solid var(--accent);
+}
+
+.dayNumber{
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    font-size:13px;
+    opacity:0.6;
+}
+
+.modeToggle{
+    position:fixed;
+    top:15px;
+    right:15px;
+    cursor:pointer;
+    font-size:14px;
+    padding:6px 12px;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:var(--card);
 }
 </style>
 </head>
 <body>
 
+<div class="modeToggle" onclick="toggleMode()">🌙 / ☀</div>
+
 <header>
-<h1>📅 Mark Életszervező</h1>
+Mark Életszervező
 </header>
 
 <nav>
 <button onclick="showSection('today')">Ma</button>
-<button onclick="showSection('calendar')">Havi Naptár</button>
+<button onclick="showSection('calendar')">Naptár</button>
 <button onclick="showSection('regular')">Rendszeres</button>
 <button onclick="showSection('school')">Iskola</button>
 <button onclick="showSection('afternoon')">Délután</button>
@@ -148,24 +177,22 @@ footer{
 <div class="container">
 
 <div id="today" class="section active">
-<h2>Mai programok</h2>
+<h3>Mai programok</h3>
 <div id="todayList"></div>
 </div>
 
 <div id="calendar" class="section">
 <div class="calendarHeader">
 <button onclick="changeMonth(-1)">◀</button>
-<h2 id="monthTitle"></h2>
+<div id="monthTitle"></div>
 <button onclick="changeMonth(1)">▶</button>
 </div>
 <div class="calendar" id="calendarGrid"></div>
 </div>
 
-<!-- A többi rész változatlan logikával -->
-
 <div id="regular" class="section">
-<h2>Rendszeres</h2>
-<input type="text" id="regularName">
+<h3>Rendszeres</h3>
+<input id="regularName" placeholder="Program neve">
 <input type="datetime-local" id="regularDate">
 <select id="regularRepeat">
 <option value="none">Nem ismétlődik</option>
@@ -177,24 +204,24 @@ footer{
 </div>
 
 <div id="school" class="section">
-<h2>Iskola</h2>
-<input type="text" id="schoolName">
+<h3>Iskola</h3>
+<input id="schoolName">
 <input type="datetime-local" id="schoolDate">
 <button class="addBtn" onclick="addEvent('school')">Hozzáadás</button>
 <div id="schoolList"></div>
 </div>
 
 <div id="afternoon" class="section">
-<h2>Délután</h2>
-<input type="text" id="afternoonName">
+<h3>Délután</h3>
+<input id="afternoonName">
 <input type="datetime-local" id="afternoonDate">
 <button class="addBtn" onclick="addEvent('afternoon')">Hozzáadás</button>
 <div id="afternoonList"></div>
 </div>
 
 <div id="highlight" class="section">
-<h2>Kiemelt</h2>
-<input type="text" id="highlightName">
+<h3>Kiemelt</h3>
+<input id="highlightName">
 <input type="datetime-local" id="highlightDate">
 <button class="addBtn" onclick="addEvent('highlight')">Hozzáadás</button>
 <div id="highlightList"></div>
@@ -203,7 +230,7 @@ footer{
 </div>
 
 <footer>
-© 2026 Mark Életszervező
+© 2026 Mark Planner
 </footer>
 
 <script>
@@ -212,67 +239,66 @@ let events = JSON.parse(localStorage.getItem("events")) || [];
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
-function saveEvents(){
+function save(){
     localStorage.setItem("events", JSON.stringify(events));
 }
 
+function toggleMode(){
+    document.body.classList.toggle("dark");
+    localStorage.setItem("mode", document.body.classList.contains("dark") ? "dark":"light");
+}
+
+if(localStorage.getItem("mode")==="dark"){
+    document.body.classList.add("dark");
+}
+
 function showSection(id){
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
     render();
 }
 
 function addEvent(type){
+    let name=document.getElementById(type+"Name").value;
+    let date=document.getElementById(type+"Date").value;
+    let repeat=document.getElementById(type+"Repeat")?document.getElementById(type+"Repeat").value:"none";
 
-    let name = document.getElementById(type+"Name").value;
-    let date = document.getElementById(type+"Date").value;
-    let repeat = document.getElementById(type+"Repeat") ? document.getElementById(type+"Repeat").value : "none";
+    if(!name||!date) return alert("Hiányzó adat!");
 
-    if(!name || !date){
-        alert("Tölts ki minden mezőt!");
-        return;
-    }
-
-    if(events.some(e => e.date === date)){
-        alert("⚠️ Ütközés van ebben az időpontban!");
-        return;
-    }
+    if(events.some(e=>e.date===date)) return alert("Időpont ütközés!");
 
     events.push({type,name,date,repeat});
-    saveEvents();
+    save();
     render();
 }
 
 function render(){
 
-    let todayStr = new Date().toISOString().split("T")[0];
-    let now = new Date();
+    let now=new Date();
+    let todayStr=now.toISOString().split("T")[0];
 
-    events = events.filter(e=>{
-        let d = new Date(e.date);
+    events=events.filter(e=>{
+        let d=new Date(e.date);
         return !(e.repeat==="none" && d<now);
     });
 
-    saveEvents();
+    save();
 
     document.getElementById("todayList").innerHTML="";
-    ["regular","school","afternoon","highlight"].forEach(type=>{
-        document.getElementById(type+"List").innerHTML="";
+    ["regular","school","afternoon","highlight"].forEach(t=>{
+        document.getElementById(t+"List").innerHTML="";
     });
 
     events.forEach(e=>{
         let d=new Date(e.date);
-        let dateOnly=d.toISOString().split("T")[0];
-
         let div=document.createElement("div");
         div.className="event";
         if(e.type==="highlight") div.classList.add("highlightEvent");
-
         div.innerHTML=`${e.name}<br>${d.toLocaleString()}`;
 
         document.getElementById(e.type+"List")?.appendChild(div);
 
-        if(dateOnly===todayStr){
+        if(d.toISOString().split("T")[0]===todayStr){
             document.getElementById("todayList").appendChild(div.cloneNode(true));
         }
     });
@@ -281,10 +307,8 @@ function render(){
 }
 
 function renderCalendar(){
-
     const grid=document.getElementById("calendarGrid");
     grid.innerHTML="";
-
     const firstDay=new Date(currentYear,currentMonth,1);
     const lastDay=new Date(currentYear,currentMonth+1,0);
 
@@ -317,8 +341,8 @@ function renderCalendar(){
     }
 }
 
-function changeMonth(direction){
-    currentMonth+=direction;
+function changeMonth(dir){
+    currentMonth+=dir;
     if(currentMonth<0){currentMonth=11;currentYear--;}
     if(currentMonth>11){currentMonth=0;currentYear++;}
     renderCalendar();
