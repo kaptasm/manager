@@ -12,28 +12,51 @@
 <style>
 
 body{
-font-family:Arial;
+font-family: system-ui, Arial;
 margin:0;
-text-align:center;
+background:#f5f6fa;
 }
 
-#controls{
-background:#f0f0f0;
-padding:10px;
+header{
+background:white;
+padding:15px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
 }
 
-#map{
-height:600px;
-width:100%;
-}
-
-button{
-padding:8px;
-margin:4px;
+header h1{
+font-size:18px;
+margin-right:20px;
 }
 
 input{
-padding:6px;
+padding:8px 10px;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+background:#e53935;
+color:white;
+font-weight:500;
+cursor:pointer;
+}
+
+button:hover{
+background:#c62828;
+}
+
+#map{
+height:calc(100vh - 70px);
+width:100%;
 }
 
 </style>
@@ -42,50 +65,36 @@ padding:6px;
 
 <body>
 
-<div id="controls">
+<header>
 
-Projekt neve:
-<input id="projectName" placeholder="pl: kutatás">
+<h1>Magyarország térkép</h1>
 
-<button onclick="newProject()">Új projekt</button>
-<button onclick="saveProject()">Mentés</button>
-
-<br><br>
-
-Település:
-<input id="city" placeholder="pl: Szeged">
+<input id="city" placeholder="Település (pl. Szeged)">
 
 <button onclick="searchCity()">Keresés</button>
 
 <button onclick="saveImage()">Kép mentése</button>
 
-</div>
+</header>
 
 <div id="map"></div>
 
-<h3>Mentett projektek</h3>
-<div id="projectList"></div>
-
 <script>
 
-/* Magyarország határok */
+/* Magyarország határ */
 
 var hungaryBounds = [
-
-[45.7,16.0], 
+[45.7,16.0],
 [48.7,23.0]
-
 ];
 
 /* térkép */
 
 var map = L.map('map',{
-
 maxBounds: hungaryBounds,
-maxBoundsViscosity: 1.0,
+maxBoundsViscosity:1,
 minZoom:7,
 maxZoom:12
-
 }).setView([47.1625,19.5033],7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
@@ -94,8 +103,6 @@ crossOrigin:true
 }).addTo(map);
 
 map.fitBounds(hungaryBounds);
-
-/* marker lista */
 
 let markers=[];
 
@@ -107,7 +114,7 @@ let marker=L.marker([lat,lon]).addTo(map);
 
 marker.bindPopup(name);
 
-markers.push({lat,lon,name});
+markers.push(marker);
 
 }
 
@@ -142,93 +149,7 @@ alert("Település nem található");
 
 }
 
-/* új projekt */
-
-function newProject(){
-
-markers=[];
-
-map.eachLayer(function(layer){
-
-if(layer instanceof L.Marker){
-
-map.removeLayer(layer);
-
-}
-
-});
-
-}
-
-/* projekt mentés */
-
-function saveProject(){
-
-let name=document.getElementById("projectName").value;
-
-if(!name){
-
-alert("Adj projekt nevet");
-
-return;
-
-}
-
-localStorage.setItem("map_"+name,JSON.stringify(markers));
-
-loadProjects();
-
-}
-
-/* projekt betöltés */
-
-function loadProject(name){
-
-newProject();
-
-let data=JSON.parse(localStorage.getItem("map_"+name));
-
-data.forEach(m=>{
-
-addMarker(m.lat,m.lon,m.name);
-
-});
-
-}
-
-/* projekt lista */
-
-function loadProjects(){
-
-let list=document.getElementById("projectList");
-
-list.innerHTML="";
-
-for(let key in localStorage){
-
-if(key.startsWith("map_")){
-
-let name=key.replace("map_","");
-
-let btn=document.createElement("button");
-
-btn.innerText=name;
-
-btn.onclick=function(){
-
-loadProject(name);
-
-};
-
-list.appendChild(btn);
-
-}
-
-}
-
-}
-
-/* kép mentés */
+/* térkép mentés */
 
 function saveImage(){
 
@@ -242,9 +163,7 @@ scale:3
 
 let link=document.createElement("a");
 
-let name=document.getElementById("projectName").value || "terkep";
-
-link.download=name+".png";
+link.download="magyarorszag_terkep.png";
 
 link.href=canvas.toDataURL("image/png");
 
@@ -253,8 +172,6 @@ link.click();
 });
 
 }
-
-loadProjects();
 
 </script>
 
