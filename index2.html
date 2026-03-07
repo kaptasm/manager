@@ -2,120 +2,208 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<title>Magyar Település Jelölő</title>
+<title>Magyarország Jelölő</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
+
 body{
-    font-family: Arial;
-    text-align:center;
+font-family:Arial;
+text-align:center;
 }
 
 #map{
-    height:600px;
-    width:90%;
-    margin:auto;
+height:600px;
+width:90%;
+margin:auto;
 }
 
-input{
-    padding:8px;
-    font-size:16px;
+.controls{
+margin:10px;
 }
 
-button{
-    padding:8px 12px;
-    margin:5px;
-}
 </style>
-
 </head>
+
 <body>
 
-<h2>Magyarország Település Jelölő</h2>
+<h2>Magyarország település jelölő</h2>
 
-<input id="city" placeholder="Írd be a települést">
+<div class="controls">
+
+Projekt neve:
+<input id="projectName">
+
+<button onclick="newProject()">Új térkép</button>
+<button onclick="saveProject()">Mentés</button>
+
+<br><br>
+
+Település keresés:
+<input id="city">
 <button onclick="searchCity()">Keresés</button>
+
+<br><br>
+
 <button onclick="saveImage()">Kép mentése</button>
 
+</div>
+
 <div id="map"></div>
+
+<h3>Mentett projektek</h3>
+<div id="projectList"></div>
 
 <script>
 
 var map = L.map('map').setView([47.1625,19.5033],7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'Map data'
+attribution:'Map'
 }).addTo(map);
 
-var markers = [];
+let markers=[];
 
-/* Betöltés mentésből */
-if(localStorage.getItem("markers")){
-    let saved = JSON.parse(localStorage.getItem("markers"));
-    saved.forEach(m=>{
-        addMarker(m.lat,m.lon,m.name,false);
-    });
+function addMarker(lat,lon,name){
+
+let marker=L.marker([lat,lon]).addTo(map);
+
+marker.bindPopup(name);
+
+markers.push({lat,lon,name});
+
 }
 
-function addMarker(lat,lon,name,save=true){
-
-    let marker = L.marker([lat,lon],{
-        icon: L.icon({
-            iconUrl:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-            iconSize:[32,32]
-        })
-    }).addTo(map);
-
-    marker.bindPopup(name);
-
-    markers.push({lat:lat,lon:lon,name:name});
-
-    if(save){
-        localStorage.setItem("markers",JSON.stringify(markers));
-    }
-}
+/* település keresés */
 
 async function searchCity(){
 
-let city = document.getElementById("city").value;
+let city=document.getElementById("city").value;
 
-let url = `https://nominatim.openstreetmap.org/search?city=${city}&country=Hungary&format=json`;
+let url=`https://nominatim.openstreetmap.org/search?city=${city}&country=Hungary&format=json`;
 
-let res = await fetch(url);
-let data = await res.json();
+let res=await fetch(url);
+
+let data=await res.json();
 
 if(data.length>0){
 
-let lat = data[0].lat;
-let lon = data[0].lon;
+let lat=data[0].lat;
+let lon=data[0].lon;
 
 addMarker(lat,lon,city);
 
 map.setView([lat,lon],11);
 
 }else{
+
 alert("Nem található település");
+
+}
+
+}
+
+/* projekt mentés */
+
+function saveProject(){
+
+let name=document.getElementById("projectName").value;
+
+if(!name){
+alert("Adj nevet a projektnek");
+return;
+}
+
+localStorage.setItem("map_"+name,JSON.stringify(markers));
+
+loadProjects();
+
+}
+
+/* új projekt */
+
+function newProject(){
+
+markers=[];
+
+map.eachLayer(function(layer){
+if(layer instanceof L.Marker){
+map.removeLayer(layer);
+}
+});
+
+}
+
+/* projekt lista */
+
+function loadProjects(){
+
+let list=document.getElementById("projectList");
+
+list.innerHTML="";
+
+for(let key in localStorage){
+
+if(key.startsWith("map_")){
+
+let name=key.replace("map_","");
+
+let btn=document.createElement("button");
+
+btn.innerText=name;
+
+btn.onclick=function(){
+loadProject(name);
+};
+
+list.appendChild(btn);
+
+}
+
 }
 
 }
 
-/* kép mentés */
+/* projekt betöltés */
+
+function loadProject(name){
+
+newProject();
+
+let data=JSON.parse(localStorage.getItem("map_"+name));
+
+data.forEach(m=>{
+addMarker(m.lat,m.lon,m.name);
+});
+
+}
+
+/* kép mentés (javított) */
+
 function saveImage(){
 
-html2canvas(document.querySelector("#map")).then(canvas => {
+html2canvas(document.querySelector("#map"),{
+scale:3
+}).then(canvas=>{
 
-let link = document.createElement('a');
-link.download = 'magyarorszag_terkep.png';
-link.href = canvas.toDataURL();
+let link=document.createElement("a");
+
+let name=document.getElementById("projectName").value || "terkep";
+
+link.download=name+".png";
+
+link.href=canvas.toDataURL("image/png");
 
 link.click();
 
 });
 
 }
+
+loadProjects();
 
 </script>
 
