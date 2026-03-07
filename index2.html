@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Magyarország térkép jelölő</title>
+<title>Magyarország térkép</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -12,50 +12,47 @@
 <style>
 
 body{
-font-family: system-ui, Arial;
 margin:0;
-background:#f5f6fa;
+font-family:Arial;
+background:#f2f2f2;
 }
 
-header{
+#controls{
 background:white;
-padding:15px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
+padding:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 display:flex;
-justify-content:center;
-align-items:center;
 gap:10px;
-flex-wrap:wrap;
+align-items:center;
+justify-content:center;
 }
 
-header h1{
+#controls h2{
+margin:0 20px 0 0;
 font-size:18px;
-margin-right:20px;
 }
 
 input{
-padding:8px 10px;
-border-radius:6px;
+padding:7px;
+border-radius:5px;
 border:1px solid #ccc;
-font-size:14px;
 }
 
 button{
-padding:8px 12px;
+padding:7px 12px;
 border:none;
-border-radius:6px;
-background:#e53935;
+border-radius:5px;
+background:#d32f2f;
 color:white;
-font-weight:500;
 cursor:pointer;
 }
 
 button:hover{
-background:#c62828;
+background:#b71c1c;
 }
 
 #map{
-height:calc(100vh - 70px);
+height:600px;
 width:100%;
 }
 
@@ -65,9 +62,9 @@ width:100%;
 
 <body>
 
-<header>
+<div id="controls">
 
-<h1>Magyarország térkép</h1>
+<h2>Magyarország térkép</h2>
 
 <input id="city" placeholder="Település (pl. Szeged)">
 
@@ -75,7 +72,7 @@ width:100%;
 
 <button onclick="saveImage()">Kép mentése</button>
 
-</header>
+</div>
 
 <div id="map"></div>
 
@@ -91,7 +88,7 @@ var hungaryBounds = [
 /* térkép */
 
 var map = L.map('map',{
-maxBounds: hungaryBounds,
+maxBounds:hungaryBounds,
 maxBoundsViscosity:1,
 minZoom:7,
 maxZoom:12
@@ -104,8 +101,6 @@ crossOrigin:true
 
 map.fitBounds(hungaryBounds);
 
-let markers=[];
-
 /* marker */
 
 function addMarker(lat,lon,name){
@@ -114,11 +109,9 @@ let marker=L.marker([lat,lon]).addTo(map);
 
 marker.bindPopup(name);
 
-markers.push(marker);
-
 }
 
-/* település keresés */
+/* keresés */
 
 async function searchCity(){
 
@@ -149,16 +142,14 @@ alert("Település nem található");
 
 }
 
-/* térkép mentés */
+/* kép mentés */
 
 function saveImage(){
 
 html2canvas(document.querySelector("#map"),{
-
 useCORS:true,
 allowTaint:true,
 scale:3
-
 }).then(canvas=>{
 
 let link=document.createElement("a");
