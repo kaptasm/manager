@@ -7,20 +7,19 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
 
 body{
 font-family:Arial;
-text-align:center;
 margin:0;
+text-align:center;
 }
 
-#topbar{
-padding:10px;
+#controls{
 background:#f0f0f0;
+padding:10px;
 }
 
 #map{
@@ -37,23 +36,19 @@ input{
 padding:6px;
 }
 
-#projectList button{
-margin:3px;
-}
-
 </style>
 
 </head>
 
 <body>
 
-<div id="topbar">
+<div id="controls">
 
 Projekt neve:
 <input id="projectName" placeholder="pl: kutatás">
 
 <button onclick="newProject()">Új projekt</button>
-<button onclick="saveProject()">Projekt mentése</button>
+<button onclick="saveProject()">Mentés</button>
 
 <br><br>
 
@@ -73,16 +68,38 @@ Település:
 
 <script>
 
-var map = L.map('map').setView([47.1625,19.5033],7);
+/* Magyarország határok */
+
+var hungaryBounds = [
+
+[45.7,16.0], 
+[48.7,23.0]
+
+];
+
+/* térkép */
+
+var map = L.map('map',{
+
+maxBounds: hungaryBounds,
+maxBoundsViscosity: 1.0,
+minZoom:7,
+maxZoom:12
+
+}).setView([47.1625,19.5033],7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 attribution:'© OpenStreetMap',
 crossOrigin:true
 }).addTo(map);
 
+map.fitBounds(hungaryBounds);
+
+/* marker lista */
+
 let markers=[];
 
-/* marker hozzáadás */
+/* marker */
 
 function addMarker(lat,lon,name){
 
@@ -90,11 +107,7 @@ let marker=L.marker([lat,lon]).addTo(map);
 
 marker.bindPopup(name);
 
-markers.push({
-lat:lat,
-lon:lon,
-name:name
-});
+markers.push({lat,lon,name});
 
 }
 
@@ -119,33 +132,13 @@ let lon=parseFloat(data[0].lon);
 
 addMarker(lat,lon,city);
 
-map.setView([lat,lon],11);
+map.setView([lat,lon],10);
 
 }else{
 
 alert("Település nem található");
 
 }
-
-}
-
-/* projekt mentés */
-
-function saveProject(){
-
-let name=document.getElementById("projectName").value;
-
-if(!name){
-
-alert("Adj projekt nevet!");
-
-return;
-
-}
-
-localStorage.setItem("map_"+name,JSON.stringify(markers));
-
-loadProjects();
 
 }
 
@@ -167,6 +160,26 @@ map.removeLayer(layer);
 
 }
 
+/* projekt mentés */
+
+function saveProject(){
+
+let name=document.getElementById("projectName").value;
+
+if(!name){
+
+alert("Adj projekt nevet");
+
+return;
+
+}
+
+localStorage.setItem("map_"+name,JSON.stringify(markers));
+
+loadProjects();
+
+}
+
 /* projekt betöltés */
 
 function loadProject(name){
@@ -183,7 +196,7 @@ addMarker(m.lat,m.lon,m.name);
 
 }
 
-/* projektek listája */
+/* projekt lista */
 
 function loadProjects(){
 
