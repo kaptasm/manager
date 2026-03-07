@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Magyar Település Jelölő</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+}
+
+#map{
+    height:600px;
+    width:90%;
+    margin:auto;
+}
+
+input{
+    padding:8px;
+    font-size:16px;
+}
+
+button{
+    padding:8px 12px;
+    margin:5px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Magyarország Település Jelölő</h2>
+
+<input id="city" placeholder="Írd be a települést">
+<button onclick="searchCity()">Keresés</button>
+<button onclick="saveImage()">Kép mentése</button>
+
+<div id="map"></div>
+
+<script>
+
+var map = L.map('map').setView([47.1625,19.5033],7);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'Map data'
+}).addTo(map);
+
+var markers = [];
+
+/* Betöltés mentésből */
+if(localStorage.getItem("markers")){
+    let saved = JSON.parse(localStorage.getItem("markers"));
+    saved.forEach(m=>{
+        addMarker(m.lat,m.lon,m.name,false);
+    });
+}
+
+function addMarker(lat,lon,name,save=true){
+
+    let marker = L.marker([lat,lon],{
+        icon: L.icon({
+            iconUrl:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+            iconSize:[32,32]
+        })
+    }).addTo(map);
+
+    marker.bindPopup(name);
+
+    markers.push({lat:lat,lon:lon,name:name});
+
+    if(save){
+        localStorage.setItem("markers",JSON.stringify(markers));
+    }
+}
+
+async function searchCity(){
+
+let city = document.getElementById("city").value;
+
+let url = `https://nominatim.openstreetmap.org/search?city=${city}&country=Hungary&format=json`;
+
+let res = await fetch(url);
+let data = await res.json();
+
+if(data.length>0){
+
+let lat = data[0].lat;
+let lon = data[0].lon;
+
+addMarker(lat,lon,city);
+
+map.setView([lat,lon],11);
+
+}else{
+alert("Nem található település");
+}
+
+}
+
+/* kép mentés */
+function saveImage(){
+
+html2canvas(document.querySelector("#map")).then(canvas => {
+
+let link = document.createElement('a');
+link.download = 'magyarorszag_terkep.png';
+link.href = canvas.toDataURL();
+
+link.click();
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
