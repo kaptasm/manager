@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
 <meta charset="UTF-8">
-<title>Magyarország Jelölő</title>
+<title>Magyarország térkép jelölő</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
@@ -13,40 +15,52 @@
 body{
 font-family:Arial;
 text-align:center;
+margin:0;
+}
+
+#topbar{
+padding:10px;
+background:#f0f0f0;
 }
 
 #map{
 height:600px;
-width:90%;
-margin:auto;
+width:100%;
 }
 
-.controls{
-margin:10px;
+button{
+padding:8px;
+margin:4px;
+}
+
+input{
+padding:6px;
+}
+
+#projectList button{
+margin:3px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h2>Magyarország település jelölő</h2>
-
-<div class="controls">
+<div id="topbar">
 
 Projekt neve:
-<input id="projectName">
+<input id="projectName" placeholder="pl: kutatás">
 
-<button onclick="newProject()">Új térkép</button>
-<button onclick="saveProject()">Mentés</button>
+<button onclick="newProject()">Új projekt</button>
+<button onclick="saveProject()">Projekt mentése</button>
 
 <br><br>
 
-Település keresés:
-<input id="city">
+Település:
+<input id="city" placeholder="pl: Szeged">
+
 <button onclick="searchCity()">Keresés</button>
-
-<br><br>
 
 <button onclick="saveImage()">Kép mentése</button>
 
@@ -62,10 +76,13 @@ Település keresés:
 var map = L.map('map').setView([47.1625,19.5033],7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-attribution:'Map'
+attribution:'© OpenStreetMap',
+crossOrigin:true
 }).addTo(map);
 
 let markers=[];
+
+/* marker hozzáadás */
 
 function addMarker(lat,lon,name){
 
@@ -73,7 +90,11 @@ let marker=L.marker([lat,lon]).addTo(map);
 
 marker.bindPopup(name);
 
-markers.push({lat,lon,name});
+markers.push({
+lat:lat,
+lon:lon,
+name:name
+});
 
 }
 
@@ -83,6 +104,8 @@ async function searchCity(){
 
 let city=document.getElementById("city").value;
 
+if(!city) return;
+
 let url=`https://nominatim.openstreetmap.org/search?city=${city}&country=Hungary&format=json`;
 
 let res=await fetch(url);
@@ -91,8 +114,8 @@ let data=await res.json();
 
 if(data.length>0){
 
-let lat=data[0].lat;
-let lon=data[0].lon;
+let lat=parseFloat(data[0].lat);
+let lon=parseFloat(data[0].lon);
 
 addMarker(lat,lon,city);
 
@@ -100,7 +123,7 @@ map.setView([lat,lon],11);
 
 }else{
 
-alert("Nem található település");
+alert("Település nem található");
 
 }
 
@@ -113,8 +136,11 @@ function saveProject(){
 let name=document.getElementById("projectName").value;
 
 if(!name){
-alert("Adj nevet a projektnek");
+
+alert("Adj projekt nevet!");
+
 return;
+
 }
 
 localStorage.setItem("map_"+name,JSON.stringify(markers));
@@ -130,14 +156,34 @@ function newProject(){
 markers=[];
 
 map.eachLayer(function(layer){
+
 if(layer instanceof L.Marker){
+
 map.removeLayer(layer);
+
 }
+
 });
 
 }
 
-/* projekt lista */
+/* projekt betöltés */
+
+function loadProject(name){
+
+newProject();
+
+let data=JSON.parse(localStorage.getItem("map_"+name));
+
+data.forEach(m=>{
+
+addMarker(m.lat,m.lon,m.name);
+
+});
+
+}
+
+/* projektek listája */
 
 function loadProjects(){
 
@@ -156,7 +202,9 @@ let btn=document.createElement("button");
 btn.innerText=name;
 
 btn.onclick=function(){
+
 loadProject(name);
+
 };
 
 list.appendChild(btn);
@@ -167,26 +215,16 @@ list.appendChild(btn);
 
 }
 
-/* projekt betöltés */
-
-function loadProject(name){
-
-newProject();
-
-let data=JSON.parse(localStorage.getItem("map_"+name));
-
-data.forEach(m=>{
-addMarker(m.lat,m.lon,m.name);
-});
-
-}
-
-/* kép mentés (javított) */
+/* kép mentés */
 
 function saveImage(){
 
 html2canvas(document.querySelector("#map"),{
+
+useCORS:true,
+allowTaint:true,
 scale:3
+
 }).then(canvas=>{
 
 let link=document.createElement("a");
