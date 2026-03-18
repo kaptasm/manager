@@ -1,84 +1,97 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <title>QR Kód Generátor PRO</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Generátor</title>
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            width: 350px;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        background: #0f172a;
+        color: #e5e7eb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-        }
+    .container {
+        width: 90%;
+        max-width: 400px;
+        background: #111827;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        text-align: center;
+    }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 22px;
+        font-weight: 600;
+    }
 
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            margin: 5px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    input {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        margin-bottom: 15px;
+        font-size: 16px;
+        background: #1f2933;
+        color: white;
+    }
 
-        .generate {
-            background: #00c9a7;
-            color: white;
-        }
+    input::placeholder {
+        color: #9ca3af;
+    }
 
-        .download {
-            background: #ff4d6d;
-            color: white;
-        }
+    button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        margin-top: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
 
-        button:hover {
-            transform: scale(1.05);
-        }
+    .generate {
+        background: #2563eb;
+        color: white;
+    }
 
-        #qrcode {
-            margin-top: 20px;
-            padding: 10px;
-            background: white;
-            border-radius: 12px;
-            display: inline-block;
-        }
-    </style>
+    .download {
+        background: #374151;
+        color: white;
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+    #qrcode {
+        margin-top: 20px;
+        padding: 10px;
+        background: white;
+        border-radius: 12px;
+        display: inline-block;
+    }
+</style>
 </head>
+
 <body>
 
-<div class="card">
-    <h1>QR Generátor</h1>
+<div class="container">
+    <h1>QR Kód Generátor</h1>
 
-    <input type="text" id="urlInput" placeholder="Pl: google.com">
+    <input type="text" id="urlInput" placeholder="https://pelda.hu">
 
     <button class="generate" onclick="generateQR()">Generálás</button>
     <button class="download" onclick="downloadQR()">Letöltés</button>
@@ -87,47 +100,47 @@
 </div>
 
 <script>
-    let qr;
+let qr;
 
-    function fixURL(url) {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            return "https://" + url;
-        }
-        return url;
+function fixURL(url) {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return "https://" + url;
+    }
+    return url;
+}
+
+function generateQR() {
+    let url = document.getElementById("urlInput").value.trim();
+
+    if (!url) {
+        alert("Adj meg egy URL-t!");
+        return;
     }
 
-    function generateQR() {
-        let url = document.getElementById("urlInput").value.trim();
+    url = fixURL(url);
 
-        if (!url) {
-            alert("Adj meg egy URL-t!");
-            return;
-        }
+    document.getElementById("qrcode").innerHTML = "";
 
-        url = fixURL(url);
+    qr = new QRCode(document.getElementById("qrcode"), {
+        text: url,
+        width: 260,
+        height: 260
+    });
+}
 
-        document.getElementById("qrcode").innerHTML = "";
+function downloadQR() {
+    const img = document.querySelector("#qrcode img");
 
-        qr = new QRCode(document.getElementById("qrcode"), {
-            text: url,
-            width: 250,
-            height: 250
-        });
+    if (!img) {
+        alert("Előbb generálj QR kódot!");
+        return;
     }
 
-    function downloadQR() {
-        const img = document.querySelector("#qrcode img");
-
-        if (!img) {
-            alert("Előbb generálj QR kódot!");
-            return;
-        }
-
-        const link = document.createElement("a");
-        link.href = img.src;
-        link.download = "qr-kod.png";
-        link.click();
-    }
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "qr-kod.png";
+    link.click();
+}
 </script>
 
 </body>
