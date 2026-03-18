@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Kód Generátor PRO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 350px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            margin: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .generate {
+            background: #00c9a7;
+            color: white;
+        }
+
+        .download {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #qrcode {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 12px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>QR Generátor</h1>
+
+    <input type="text" id="urlInput" placeholder="Pl: google.com">
+
+    <button class="generate" onclick="generateQR()">Generálás</button>
+    <button class="download" onclick="downloadQR()">Letöltés</button>
+
+    <div id="qrcode"></div>
+</div>
+
+<script>
+    let qr;
+
+    function fixURL(url) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            return "https://" + url;
+        }
+        return url;
+    }
+
+    function generateQR() {
+        let url = document.getElementById("urlInput").value.trim();
+
+        if (!url) {
+            alert("Adj meg egy URL-t!");
+            return;
+        }
+
+        url = fixURL(url);
+
+        document.getElementById("qrcode").innerHTML = "";
+
+        qr = new QRCode(document.getElementById("qrcode"), {
+            text: url,
+            width: 250,
+            height: 250
+        });
+    }
+
+    function downloadQR() {
+        const img = document.querySelector("#qrcode img");
+
+        if (!img) {
+            alert("Előbb generálj QR kódot!");
+            return;
+        }
+
+        const link = document.createElement("a");
+        link.href = img.src;
+        link.download = "qr-kod.png";
+        link.click();
+    }
+</script>
+
+</body>
+</html>
