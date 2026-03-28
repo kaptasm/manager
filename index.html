@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Tech Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .pdf iframe {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .images img {
+            width: 100%;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .images img:hover {
+            transform: scale(1.05);
+        }
+
+        .text {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Modern Tech Weboldal</h1>
+
+    <div class="container">
+
+        <!-- PDF -->
+        <div class="card pdf">
+            <h2>📄 PDF megjelenítés</h2>
+            <iframe src="yourfile.pdf"></iframe>
+        </div>
+
+        <!-- Képek -->
+        <div class="card">
+            <h2>🖼️ Képek</h2>
+            <div class="images">
+                <img src="img1.jpg" alt="">
+                <img src="img2.jpg" alt="">
+                <img src="img3.jpg" alt="">
+                <img src="img4.jpg" alt="">
+                <img src="img5.jpg" alt="">
+            </div>
+        </div>
+
+        <!-- Szöveg -->
+        <div class="card">
+            <h2>📝 Szöveg</h2>
+            <p class="text">
+                Ide jöhet bármilyen szöveg. Például egy projekt leírás, 
+                AI rendszer bemutatása, vagy akár a saját játékod ismertetése.
+                Ez a design modern, letisztult és jól néz ki portfólióhoz is.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
