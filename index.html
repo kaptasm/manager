@@ -23,11 +23,42 @@
         h1 {
             text-align: center;
             font-size: 3rem;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             letter-spacing: 2px;
             background: linear-gradient(90deg,#3b82f6,#22c55e);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* GOMBOK */
+        .buttons {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .surveyBtn {
+            display: inline-block;
+            margin: 10px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transition: 0.3s;
+        }
+
+        .surveyBtn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(59,130,246,0.6);
+        }
+
+        .surveyBtn.alt {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .surveyBtn.alt:hover {
+            box-shadow: 0 0 20px rgba(34,197,94,0.6);
         }
 
         .container {
@@ -53,7 +84,6 @@
             margin-bottom: 10px;
         }
 
-        /* PDF GOMB */
         .pdfBtn{
             display:inline-block;
             margin-top:15px;
@@ -71,7 +101,6 @@
             box-shadow:0 0 20px rgba(34,197,94,0.6);
         }
 
-        /* KÉPEK */
         .images {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -89,7 +118,6 @@
             box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
 
-        /* SZÖVEG */
         .text {
             line-height: 1.7;
             font-size: 1.1rem;
@@ -102,18 +130,31 @@
 
     <h1>Jász-Stones <br> - <br> Cirkulus</h1>
 
+    <!-- GOMBOK -->
+    <div class="buttons">
+        <a href="https://forms.gle/Lg2VpVNF2Fpw2ura9" target="_blank" class="surveyBtn">
+            Kérdőív látóknak
+        </a>
+
+        <a href="https://forms.gle/HDaRD81kNK5aMwGf7" target="_blank" class="surveyBtn alt">
+            Kérdőív vakoknak
+        </a>
+    </div>
+
     <div class="container">
 
-    <div class="card">
+        <div class="card">
             <h2>📝 Leírás</h2>
-            <p class="text">Jász Stones:
-A Csányi Alapítvány jászberényi csapata vagyunk, 5 éve versenyzünk, projektünket a First LEGO League-re készítettük.
-
-Az idei szezon:
-Az „Unearthed” témához kapcsolódva a Jászkürtöt, a jász identitás fontos jelképét választottuk.
-
-Cél:
-A projekt célja, hogy a Jászkürtöt mindenki – különösen a látássérültek és fogyatékossággal élők – számára is átélhetővé tegye, mivel az eredeti darab nem érinthető a múzeumban.</p>
+            <p class="text">
+                Jász Stones:
+                A Csányi Alapítvány jászberényi csapata vagyunk, 5 éve versenyzünk, projektünket a First LEGO League-re készítettük.
+                <br><br>
+                Az idei szezon:
+                Az „Unearthed” témához kapcsolódva a Jászkürtöt, a jász identitás fontos jelképét választottuk.
+                <br><br>
+                Cél:
+                A projekt célja, hogy a Jászkürtöt mindenki – különösen a látássérültek és fogyatékossággal élők – számára is átélhetővé tegye, mivel az eredeti darab nem érinthető a múzeumban.
+            </p>
         </div>
 
         <!-- PDF -->
@@ -139,9 +180,6 @@ A projekt célja, hogy a Jászkürtöt mindenki – különösen a látássérü
                 <img src="IMG_6218.jpeg">
             </div>
         </div>
-
-        <!-- Szöveg -->
-        
 
     </div>
 
