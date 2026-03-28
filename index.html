@@ -14,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
             color: white;
             min-height: 100vh;
             padding: 30px;
@@ -25,6 +25,9 @@
             font-size: 3rem;
             margin-bottom: 40px;
             letter-spacing: 2px;
+            background: linear-gradient(90deg,#3b82f6,#22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .container {
@@ -33,21 +36,42 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
             border-radius: 20px;
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: 0.3s;
         }
 
-        .pdf iframe {
-            width: 100%;
-            height: 500px;
-            border-radius: 10px;
-            border: none;
+        .card:hover {
+            transform: translateY(-5px);
         }
 
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        /* PDF GOMB */
+        .pdfBtn{
+            display:inline-block;
+            margin-top:15px;
+            padding:14px 22px;
+            border-radius:12px;
+            text-decoration:none;
+            font-weight:500;
+            color:white;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            transition:0.3s;
+        }
+
+        .pdfBtn:hover{
+            transform:scale(1.05);
+            box-shadow:0 0 20px rgba(34,197,94,0.6);
+        }
+
+        /* KÉPEK */
         .images {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -61,13 +85,17 @@
         }
 
         .images img:hover {
-            transform: scale(1.05);
+            transform: scale(1.07);
+            box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
 
+        /* SZÖVEG */
         .text {
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 1.1rem;
+            opacity: 0.9;
         }
+
     </style>
 </head>
 <body>
@@ -77,30 +105,36 @@
     <div class="container">
 
         <!-- PDF -->
-        <div class="card pdf">
+        <div class="card">
             <h2>📄 Az innováció dokumentációja</h2>
-            <iframe src="2026 Cirkulus Implementáció 2026.02.26. vegleges(1).pdf"></iframe>
+            <p>Kattints a dokumentum megnyitásához:</p>
+
+            <a href="2026 Cirkulus Implementáció 2026.02.26. vegleges(1).pdf" 
+               target="_blank" 
+               class="pdfBtn">
+               📂 Megnyitás
+            </a>
         </div>
 
         <!-- Képek -->
         <div class="card">
             <h2>🖼️ Képek</h2>
             <div class="images">
-                <img src="img1.jpg" alt="">
-                <img src="img2.jpg" alt="">
-                <img src="img3.jpg" alt="">
-                <img src="img4.jpg" alt="">
-                <img src="img5.jpg" alt="">
+                <img src="img1.jpg">
+                <img src="img2.jpg">
+                <img src="img3.jpg">
+                <img src="img4.jpg">
+                <img src="img5.jpg">
             </div>
         </div>
 
         <!-- Szöveg -->
         <div class="card">
-            <h2>📝 Szöveg</h2>
+            <h2>📝 Leírás</h2>
             <p class="text">
-                Ide jöhet bármilyen szöveg. Például egy projekt leírás, 
-                AI rendszer bemutatása, vagy akár a saját játékod ismertetése.
-                Ez a design modern, letisztult és jól néz ki portfólióhoz is.
+                A Jász-Stones Circulus egy innovatív projekt, amely a technológia és a kreativitás
+                ötvözésével egy új élményt nyújt. A rendszer célja, hogy modern eszközökkel mutassa be
+                az interaktív tanulás és a vizuális élmény lehetőségeit.
             </p>
         </div>
 
