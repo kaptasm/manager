@@ -6,7 +6,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        /* CSS remains unchanged */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+            color: white;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg,#3b82f6,#22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* GOMBOK */
+        .buttons {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .surveyBtn {
+            display: inline-block;
+            margin: 10px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transition: 0.3s;
+        }
+
+        .surveyBtn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(59,130,246,0.6);
+        }
+
+        .surveyBtn.alt {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .surveyBtn.alt:hover {
+            box-shadow: 0 0 20px rgba(34,197,94,0.6);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        .pdfBtn{
+            display:inline-block;
+            margin-top:15px;
+            padding:14px 22px;
+            border-radius:12px;
+            text-decoration:none;
+            font-weight:500;
+            color:white;
+            background:linear-gradient(135deg,#22c55e,#16a34a);
+            transition:0.3s;
+        }
+
+        .pdfBtn:hover{
+            transform:scale(1.05);
+            box-shadow:0 0 20px rgba(34,197,94,0.6);
+        }
+
+        .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .images img {
+            width: 100%;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .images img:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 15px rgba(59,130,246,0.5);
+        }
+
+        .text {
+            line-height: 1.7;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
