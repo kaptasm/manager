@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Csányi Hangtérkép</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:   #f5f0e8;
+  --paper:   #ede8de;
+  --ink:     #1a1714;
+  --ink2:    #3d3830;
+  --muted:   #8a8278;
+  --border:  #d4cec4;
+  --accent:  #c0392b;
+  --accent2: #e8846e;
+  --gold:    #b8992a;
+  --playing: #1a6b3c;
+}
+
+html, body {
+  height: 100%;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 28px 40px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  background: var(--cream);
+  position: relative;
+}
+header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 40px; right: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 70%);
+}
+.site-title {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  color: var(--ink);
+}
+.site-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+.site-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+  padding-bottom: 3px;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  height: calc(100vh - 85px);
+}
+
+/* ── MAP AREA ── */
+.map-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-container {
+  position: relative;
+  display: inline-block;
+}
+
+#baseCanvas {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 120px);
+}
+
+#zoneCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  cursor: crosshair;
+}
+
+/* Upload overlay */
+.upload-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--paper);
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+.upload-overlay.hidden { display: none; }
+
+.upload-drop {
+  width: 320px;
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 40px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-drop:hover, .upload-drop.drag { border-color: var(--accent); background: rgba(192,57,43,0.04); }
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+.upload-drop p {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+.upload-drop small { font-size: 12px; color: var(--muted); }
+#imgInput { display: none; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 300px;
+  border-left: 1px solid var(--border);
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-top {
+  padding: 20px 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+}
+.mode-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+.mode-tab:first-child { border-radius: 3px 0 0 3px; }
+.mode-tab:last-child  { border-radius: 0 3px 3px 0; border-left: none; }
+.mode-tab.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* ── ZONE LIST ── */
+.zone-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.zone-card {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: white;
+}
+.zone-card:hover { border-color: var(--muted); }
+.zone-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(192,57,43,0.08);
+}
+.zone-card.playing {
+  border-color: var(--playing);
+  box-shadow: 0 0 0 3px rgba(26,107,60,0.1);
+}
+
+.zone-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.zone-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.zone-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zone-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+}
+.zone-badge.has-sound {
+  background: rgba(26,107,60,0.1);
+  color: var(--playing);
+  border: 1px solid rgba(26,107,60,0.2);
+}
+.zone-badge.no-sound {
+  background: rgba(138,130,120,0.1);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.zone-body {
+  padding: 0 12px 12px;
+  display: none;
+}
+.zone-body.open { display: block; }
+
+.zone-name-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  background: var(--cream);
+  color: var(--ink);
+  outline: none;
+  margin-bottom: 8px;
+}
+.zone-name-input:focus { border-color: var(--accent); }
+
+.audio-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+  transition: all 0.15s;
+  background: var(--cream);
+  margin-bottom: 6px;
+}
+.audio-pick:hover { border-color: var(--accent); color: var(--ink); }
+.audio-pick.has { border-style: solid; border-color: var(--playing); color: var(--playing); }
+.audio-pick input { display: none; }
+
+.zone-actions-row {
+  display: flex;
+  gap: 6px;
+}
+.btn-small {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.btn-small:hover { background: var(--paper); color: var(--ink); }
+.btn-small.danger:hover { border-color: var(--accent); color: var(--accent); background: rgba(192,57,43,0.05); }
+.btn-small.play:hover { border-color: var(--playing); color: var(--playing); background: rgba(26,107,60,0.05); }
+
+/* Empty state */
+.empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+.empty-state p { font-size: 13px; line-height: 1.6; }
+.empty-icon { font-size: 28px; margin-bottom: 12px; opacity: 0.5; }
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn-main {
+  flex: 1;
+  padding: 9px 16px;
+  border-radius: 3px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-main:hover { background: var(--ink2); }
+.btn-outline {
+  padding: 9px 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.btn-outline:hover { border-color: var(--muted); color: var(--ink); }
+
+/* ── PLAYING PULSE ── */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.pulse-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--playing);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+.pulse-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--playing);
+  animation: pulse-ring 1s ease-out infinite;
+}
+
+/* ── TOOLTIP ── */
+.zone-tooltip {
+  position: absolute;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 5px 12px;
+  border-radius: 3px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.zone-tooltip.visible { opacity: 1; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── NOW PLAYING ── */
+.now-playing {
+  padding: 10px 20px;
+  background: rgba(26,107,60,0.06);
+  border-bottom: 1px solid rgba(26,107,60,0.15);
+  font-size: 12px;
+  color: var(--playing);
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.now-playing.visible { display: flex; }
+.np-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--playing); animation: np-blink 1s ease-in-out infinite; }
+@keyframes np-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="site-title">Csányi <em>Hangtérkép</em></div>
+  </div>
+  <div class="site-subtitle">Kattints a térképen egy zónára a hang lejátszásához</div>
+</header>
+
+<div class="layout">
+  <!-- MAP -->
+  <div class="map-area" id="mapArea">
+    <!-- Upload overlay -->
+    <div class="upload-overlay" id="uploadOverlay">
+      <div class="upload-drop" id="uploadDrop">
+        <div class="upload-icon">🗺</div>
+        <p>Térkép betöltése</p>
+        <small>Kattints, vagy húzz ide egy képet (PNG, JPG, WebP)</small>
+        <input type="file" id="imgInput" accept="image/*">
+      </div>
+    </div>
+
+    <!-- Canvas pair -->
+    <div class="map-container" id="mapContainer" style="display:none">
+      <canvas id="baseCanvas"></canvas>
+      <canvas id="zoneCanvas"></canvas>
+      <div class="zone-tooltip" id="tooltip"></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabView" onclick="setMode('view')">Lejátszás</button>
+        <button class="mode-tab" id="tabEdit" onclick="setMode('edit')">Szerkesztés</button>
+      </div>
+    </div>
+
+    <div class="now-playing" id="nowPlaying">
+      <div class="np-dot"></div>
+      <span id="npLabel">—</span>
+    </div>
+
+    <div class="zone-scroll" id="zoneScroll">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📍</div>
+        <p>Nincs még zóna.<br>Váltj <strong>Szerkesztés</strong> módba és rajzolj zónákat a képre.</p>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-main" id="btnSave" onclick="exportData()">Exportálás</button>
+      <button class="btn-outline" id="btnLoad" onclick="document.getElementById('importInput').click()">Betöltés</button>
+      <input type="file" id="importInput" accept=".json" style="display:none">
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════
+const S = {
+  image: null,
+  zones: [],           // {id, name, x,y,w,h (normalised 0-1), color, audioData, audioName}
+  mode: 'view',        // 'view' | 'edit'
+  drawing: false,
+  drawStart: null,
+  drawNow: null,
+  selectedId: null,
+  hoveredId: null,
+  activeAudio: null,
+  playingId: null,
+};
+
+const PALETTE = [
+  '#c0392b','#8e44ad','#2980b9','#16a085','#d35400',
+  '#27ae60','#f39c12','#2c3e50','#7f8c8d','#c0392b',
+];
+let colorIdx = 0;
+let pulseDots = [];
+
+// ══════════════════════════════════════════════════════════
+//  DOM
+// ══════════════════════════════════════════════════════════
+const baseCanvas  = document.getElementById('baseCanvas');
+const zoneCanvas  = document.getElementById('zoneCanvas');
+const bCtx = baseCanvas.getContext('2d');
+const zCtx = zoneCanvas.getContext('2d');
+const mapContainer = document.getElementById('mapContainer');
+const uploadOverlay = document.getElementById('uploadOverlay');
+const tooltip = document.getElementById('tooltip');
+const zoneScroll = document.getElementById('zoneScroll');
+const emptyState = document.getElementById('emptyState');
+const nowPlaying = document.getElementById('nowPlaying');
+const npLabel = document.getElementById('npLabel');
+
+// ══════════════════════════════════════════════════════════
+//  IMAGE
+// ══════════════════════════════════════════════════════════
+function loadImageFile(file) {
+  if (!file?.type.startsWith('image/')) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      S.image = img;
+      fitCanvases();
+      drawBase();
+      drawZones();
+      uploadOverlay.classList.add('hidden');
+      mapContainer.style.display = 'inline-block';
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(file);
+}
+
+function fitCanvases() {
+  const area = document.getElementById('mapArea');
+  const maxW = area.clientWidth - 32;
+  const maxH = area.clientHeight - 32;
+  const img = S.image;
+  const scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+  const w = Math.round(img.naturalWidth * scale);
+  const h = Math.round(img.naturalHeight * scale);
+  baseCanvas.width = zoneCanvas.width = w;
+  baseCanvas.height = zoneCanvas.height = h;
+}
+
+function drawBase() {
+  bCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
+  bCtx.drawImage(S.image, 0, 0, baseCanvas.width, baseCanvas.height);
+}
+
+// ══════════════════════════════════════════════════════════
+//  ZONES DRAW
+// ══════════════════════════════════════════════════════════
+function toCanvas(zone) {
+  return {
+    x: zone.x * zoneCanvas.width,
+    y: zone.y * zoneCanvas.height,
+    w: zone.w * zoneCanvas.width,
+    h: zone.h * zoneCanvas.height,
+  };
+}
+
+function drawZones() {
+  zCtx.clearRect(0, 0, zoneCanvas.width, zoneCanvas.height);
+
+  for (const zone of S.zones) {
+    const r = toCanvas(zone);
+    const isSelected = zone.id === S.selectedId;
+    const isHovered  = zone.id === S.hoveredId;
+    const isPlaying  = zone.id === S.playingId;
+
+    zCtx.save();
+
+    // Fill
+    zCtx.globalAlpha = isPlaying ? 0.35 : isHovered ? 0.3 : isSelected ? 0.28 : 0.15;
+    zCtx.fillStyle = zone.color;
+    zCtx.fillRect(r.x, r.y, r.w, r.h);
+
+    // Border
+    zCtx.globalAlpha = 1;
+    zCtx.strokeStyle = isPlaying ? '#1a6b3c' : zone.color;
+    zCtx.lineWidth = isSelected ? 2.5 : isHovered ? 2 : 1.5;
+    zCtx.strokeRect(r.x, r.y, r.w, r.h);
+
+    // Label pill
+    const label = zone.name;
+    zCtx.font = '500 11px "DM Sans", sans-serif';
+    const tw = zCtx.measureText(label).width;
+    const px = r.x + 7, py = r.y + 7;
+    zCtx.globalAlpha = 0.88;
+    zCtx.fillStyle = isPlaying ? '#1a6b3c' : zone.color;
+    roundRect(zCtx, px - 4, py - 12, tw + 8, 17, 3);
+    zCtx.fill();
+    zCtx.globalAlpha = 1;
+    zCtx.fillStyle = '#fff';
+    zCtx.fillText(label, px, py);
+
+    // Audio icon
+    if (zone.audioData) {
+      zCtx.globalAlpha = 0.85;
+      zCtx.fillStyle = isPlaying ? '#1a6b3c' : '#555';
+      zCtx.font = '11px sans-serif';
+      zCtx.fillText('♪', r.x + r.w - 18, r.y + 16);
+    }
+
+    zCtx.restore();
+  }
+
+  // Drawing preview
+  if (S.drawing && S.drawStart && S.drawNow) {
+    const x = Math.min(S.drawStart.x, S.drawNow.x);
+    const y = Math.min(S.drawStart.y, S.drawNow.y);
+    const w = Math.abs(S.drawNow.x - S.drawStart.x);
+    const h = Math.abs(S.drawNow.y - S.drawStart.y);
+    zCtx.save();
+    zCtx.globalAlpha = 0.15;
+    zCtx.fillStyle = PALETTE[colorIdx % PALETTE.length];
+    zCtx.fillRect(x, y, w, h);
+    zCtx.globalAlpha = 1;
+    zCtx.strokeStyle = PALETTE[colorIdx % PALETTE.length];
+    zCtx.lineWidth = 2;
+    zCtx.setLineDash([5, 4]);
+    zCtx.strokeRect(x, y, w, h);
+    zCtx.setLineDash([]);
+    zCtx.restore();
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ══════════════════════════════════════════════════════════
+//  CANVAS EVENTS
+// ══════════════════════════════════════════════════════════
+function canvasPos(e) {
+  const rect = zoneCanvas.getBoundingClientRect();
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+function getZoneAt(cx, cy) {
+  const nx = cx / zoneCanvas.width;
+  const ny = cy / zoneCanvas.height;
+  for (let i = S.zones.length - 1; i >= 0; i--) {
+    const z = S.zones[i];
+    if (nx >= z.x && nx <= z.x + z.w && ny >= z.y && ny <= z.y + z.h) return z;
+  }
+  return null;
+}
+
+zoneCanvas.addEventListener('mousedown', e => {
+  if (!S.image) return;
+  const p = canvasPos(e);
+  if (S.mode === 'edit') {
+    S.drawing = true;
+    S.drawStart = p;
+    S.drawNow = p;
+  } else {
+    // View mode: play audio on click
+    const zone = getZoneAt(p.x, p.y);
+    if (zone) triggerZone(zone, p.x, p.y);
+  }
+});
+
+zoneCanvas.addEventListener('mousemove', e => {
+  if (!S.image) return;
+  const p = canvasPos(e);
+  if (S.mode === 'edit' && S.drawing) {
+    S.drawNow = p;
+    drawZones();
+    return;
+  }
+  const zone = getZoneAt(p.x, p.y);
+  const prevHover = S.hoveredId;
+  S.hoveredId = zone?.id ?? null;
+  if (S.hoveredId !== prevHover) drawZones();
+
+  if (zone) {
+    tooltip.textContent = zone.name + (zone.audioData ? ' ♪' : '');
+    tooltip.style.left = (p.x + 14) + 'px';
+    tooltip.style.top  = (p.y - 8) + 'px';
+    tooltip.classList.add('visible');
+    zoneCanvas.style.cursor = S.mode === 'view' ? 'pointer' : 'crosshair';
+  } else {
+    tooltip.classList.remove('visible');
+    zoneCanvas.style.cursor = 'crosshair';
+  }
+});
+
+zoneCanvas.addEventListener('mouseup', e => {
+  if (!S.image || !S.drawing) return;
+  const p = canvasPos(e);
+  S.drawing = false;
+  const x = Math.min(S.drawStart.x, p.x);
+  const y = Math.min(S.drawStart.y, p.y);
+  const w = Math.abs(p.x - S.drawStart.x);
+  const h = Math.abs(p.y - S.drawStart.y);
+  if (w > 10 && h > 10) {
+    createZone(
+      x / zoneCanvas.width, y / zoneCanvas.height,
+      w / zoneCanvas.width, h / zoneCanvas.height
+    );
+  }
+  S.drawStart = S.drawNow = null;
+  drawZones();
+});
+
+zoneCanvas.addEventListener('mouseleave', () => {
+  tooltip.classList.remove('visible');
+  S.hoveredId = null;
+  if (S.drawing) {
+    S.drawing = false;
+    S.drawStart = S.drawNow = null;
+    drawZones();
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  ZONE CRUD
+// ══════════════════════════════════════════════════════════
+function createZone(x, y, w, h) {
+  const color = PALETTE[colorIdx++ % PALETTE.length];
+  const zone = {
+    id: Date.now() + Math.random(),
+    name: 'Zóna ' + (S.zones.length + 1),
+    x, y, w, h,
+    color,
+    audioData: null,
+    audioName: null,
+  };
+  S.zones.push(zone);
+  S.selectedId = zone.id;
+  renderList();
+  drawZones();
+  // Auto-expand new zone in list
+  setTimeout(() => {
+    const body = document.querySelector(`.zone-body[data-id="${zone.id}"]`);
+    if (body) body.classList.add('open');
+  }, 10);
+}
+
+function deleteZone(id) {
+  S.zones = S.zones.filter(z => z.id !== id);
+  if (S.selectedId === id) S.selectedId = null;
+  if (S.playingId === id) stopAudio();
+  renderList();
+  drawZones();
+}
+
+// ══════════════════════════════════════════════════════════
+//  AUDIO
+// ══════════════════════════════════════════════════════════
+function triggerZone(zone, cx, cy) {
+  if (!zone.audioData) return;
+  stopAudio();
+  const audio = new Audio(zone.audioData);
+  audio.play().catch(() => {});
+  S.activeAudio = audio;
+  S.playingId = zone.id;
+
+  npLabel.textContent = zone.name;
+  nowPlaying.classList.add('visible');
+
+  // Pulse dot on map
+  spawnPulse(cx, cy, zone.color);
+
+  audio.onended = () => {
+    S.playingId = null;
+    S.activeAudio = null;
+    nowPlaying.classList.remove('visible');
+    renderList();
+    drawZones();
+  };
+
+  renderList();
+  drawZones();
+}
+
+function stopAudio() {
+  if (S.activeAudio) {
+    S.activeAudio.pause();
+    S.activeAudio = null;
+  }
+  S.playingId = null;
+  nowPlaying.classList.remove('visible');
+}
+
+function spawnPulse(cx, cy, color) {
+  const dot = document.createElement('div');
+  dot.className = 'pulse-dot';
+  dot.style.left = cx + 'px';
+  dot.style.top  = cy + 'px';
+  dot.style.background = color;
+  dot.style.setProperty('--playing', color);
+  mapContainer.appendChild(dot);
+  setTimeout(() => dot.remove(), 1800);
+}
+
+// ══════════════════════════════════════════════════════════
+//  SIDEBAR RENDER
+// ══════════════════════════════════════════════════════════
+function renderList() {
+  // Remove old cards
+  document.querySelectorAll('.zone-card').forEach(el => el.remove());
+  emptyState.style.display = S.zones.length ? 'none' : 'block';
+
+  for (const zone of S.zones) {
+    const isPlaying = zone.id === S.playingId;
+    const card = document.createElement('div');
+    card.className = 'zone-card' + (zone.id === S.selectedId ? ' active' : '') + (isPlaying ? ' playing' : '');
+
+    card.innerHTML = `
+      <div class="zone-card-head" data-id="${zone.id}">
+        <div class="zone-swatch" style="background:${zone.color}"></div>
+        <div class="zone-label">${esc(zone.name)}</div>
+        <span class="zone-badge ${zone.audioData ? 'has-sound' : 'no-sound'}">${zone.audioData ? '♪' : '—'}</span>
+      </div>
+      <div class="zone-body" data-id="${zone.id}">
+        <input class="zone-name-input" value="${esc(zone.name)}" placeholder="Zóna neve" data-zone="${zone.id}">
+        <div class="audio-pick ${zone.audioData ? 'has' : ''}" data-audio="${zone.id}">
+          ${zone.audioData ? '♪ ' + esc(zone.audioName) : '+ Hangfájl hozzárendelése'}
+          <input type="file" accept="audio/*" data-zone="${zone.id}">
+        </div>
+        <div class="zone-actions-row">
+          ${zone.audioData ? `<button class="btn-small play" data-play="${zone.id}">▶ Lejátszás</button>` : ''}
+          <button class="btn-small danger" data-del="${zone.id}">Törlés</button>
+        </div>
+      </div>
+    `;
+
+    // Head click → select + toggle
+    card.querySelector('.zone-card-head').addEventListener('click', () => {
+      S.selectedId = S.selectedId === zone.id ? null : zone.id;
+      const body = card.querySelector('.zone-body');
+      body.classList.toggle('open', S.selectedId === zone.id);
+      drawZones();
+      renderList();
+    });
+
+    // Name input
+    card.querySelector('.zone-name-input').addEventListener('input', e => {
+      zone.name = e.target.value;
+      drawZones();
+    });
+    card.querySelector('.zone-name-input').addEventListener('click', e => e.stopPropagation());
+
+    // Audio pick click
+    const audioPick = card.querySelector(`[data-audio="${zone.id}"]`);
+    const audioFileInput = audioPick.querySelector('input[type="file"]');
+    audioPick.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT') audioFileInput.click();
+    });
+    audioFileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const fr = new FileReader();
+      fr.onload = ev => {
+        zone.audioData = ev.target.result;
+        zone.audioName = file.name;
+        renderList();
+        drawZones();
+      };
+      fr.readAsDataURL(file);
+    });
+
+    // Play button
+    const playBtn = card.querySelector(`[data-play="${zone.id}"]`);
+    if (playBtn) {
+      playBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const r = toCanvas(zone);
+        triggerZone(zone, r.x + r.w / 2, r.y + r.h / 2);
+      });
+    }
+
+    // Delete button
+    card.querySelector(`[data-del="${zone.id}"]`).addEventListener('click', e => {
+      e.stopPropagation();
+      deleteZone(zone.id);
+    });
+
+    zoneScroll.appendChild(card);
+
+    // Restore open state
+    if (zone.id === S.selectedId) {
+      card.querySelector('.zone-body').classList.add('open');
+    }
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════
+//  MODE
+// ══════════════════════════════════════════════════════════
+function setMode(mode) {
+  S.mode = mode;
+  document.getElementById('tabView').classList.toggle('active', mode === 'view');
+  document.getElementById('tabEdit').classList.toggle('active', mode === 'edit');
+  zoneCanvas.style.cursor = mode === 'edit' ? 'crosshair' : 'default';
+}
+
+// ══════════════════════════════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════════════════════════════
+function exportData() {
+  const data = {
+    zones: S.zones.map(z => ({ ...z })),
+    imageData: S.image ? baseCanvas.toDataURL() : null,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'csanyi-hangterkep.json';
+  a.click();
+}
+
+document.getElementById('importInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fr = new FileReader();
+  fr.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      S.zones = data.zones || [];
+      colorIdx = S.zones.length;
+      if (data.imageData) {
+        const img = new Image();
+        img.onload = () => {
+          S.image = img;
+          fitCanvases();
+          drawBase();
+          drawZones();
+          uploadOverlay.classList.add('hidden');
+          mapContainer.style.display = 'inline-block';
+          renderList();
+        };
+        img.src = data.imageData;
+      } else {
+        renderList();
+        drawZones();
+      }
+    } catch(err) { alert('Hibás fájl.'); }
+  };
+  fr.readAsText(file);
+  e.target.value = '';
+});
+
+// ══════════════════════════════════════════════════════════
+//  UPLOAD EVENTS
+// ══════════════════════════════════════════════════════════
+const uploadDrop = document.getElementById('uploadDrop');
+const imgInput   = document.getElementById('imgInput');
+
+uploadDrop.addEventListener('click', () => imgInput.click());
+imgInput.addEventListener('change', e => loadImageFile(e.target.files[0]));
+
+uploadDrop.addEventListener('dragover', e => { e.preventDefault(); uploadDrop.classList.add('drag'); });
+uploadDrop.addEventListener('dragleave', () => uploadDrop.classList.remove('drag'));
+uploadDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadDrop.classList.remove('drag');
+  loadImageFile(e.dataTransfer.files[0]);
+});
+
+// Also allow drop anywhere on map
+document.getElementById('mapArea').addEventListener('dragover', e => e.preventDefault());
+document.getElementById('mapArea').addEventListener('drop', e => {
+  e.preventDefault();
+  loadImageFile(e.dataTransfer.files[0]);
+});
+
+// ══════════════════════════════════════════════════════════
+//  RESIZE
+// ══════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  if (S.image) { fitCanvases(); drawBase(); drawZones(); }
+});
+
+// INIT
+renderList();
+</script>
+</body>
+</html>
