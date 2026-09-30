@@ -3,1641 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adatbázis-kezelés Alapjai - Interaktív Tananyag & Kvíz</title>
+    <title>Adatbázis-kezelés Alapjai - Tananyag & Kvíz (1-4. Modul)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 4px;
-        }
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col md:flex-row">
 
     <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-80 bg-slate-900/90 border-r border-slate-800 flex-shrink-0 md:h-screen md:sticky md:top-0 z-20 flex flex-col">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
-            <div>
-                <h1 class="font-bold text-lg text-blue-400 tracking-wide flex items-center gap-2">
-                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                    DB Puska & Kvíz
-                </h1>
-                <p class="text-xs text-slate-400 mt-1">Adatbázis-kezelés alapjai (161-192. o.)</p>
-            </div>
+    <aside class="w-full md:w-80 bg-slate-800 border-r border-slate-700 flex flex-col shrink-0">
+        <div class="p-5 border-b border-slate-700">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                Adatbázis-kezelés
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Interaktív felkészítő (1–4. modul)</p>
         </div>
-
-        <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar" id="nav-container">
-            <!-- Nav buttons injected via JavaScript -->
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar" id="nav-container">
+            <!-- Navigation links rendered by JS -->
         </nav>
 
-        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
-            <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
-                <span>Összesített Haladás:</span>
-                <span id="overall-progress-text" class="font-semibold text-blue-400">0%</span>
+        <div class="p-4 border-t border-slate-700 bg-slate-800/50">
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-1">
+                <span>Összesített haladás</span>
+                <span id="overall-progress-text">0%</span>
             </div>
-            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div id="overall-progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+            <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                <div id="overall-progress-bar" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div>
             </div>
         </div>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full overflow-y-auto">
-        <!-- Module Header -->
-        <header class="mb-8 glass-panel p-6 rounded-2xl shadow-xl">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <span id="module-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">1. Fejezet</span>
-                    <h2 id="module-title" class="text-2xl md:text-3xl font-bold mt-2 text-white">Modul Címe</h2>
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        <div class="max-w-4xl mx-auto">
+            <!-- Module Header -->
+            <div class="mb-8">
+                <div class="flex items-center space-x-3 mb-2">
+                    <span id="module-badge" class="px-3 py-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full text-xs font-semibold">
+                        1. Modul
+                    </span>
+                    <span class="text-xs text-slate-400">2. lap / 162. oldal</span>
                 </div>
-                <div class="flex gap-2">
-                    <button id="tab-summary-btn" onclick="switchTab('summary')" class="px-4 py-2 rounded-xl font-medium text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
-                        📖 Tananyag / Puska
+                <h2 id="module-title" class="text-2xl md:text-3xl font-bold text-white"></h2>
+            </div>
+
+            <!-- Content Card -->
+            <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-xl mb-8">
+                <h3 class="text-lg font-semibold text-indigo-400 mb-4 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Elméleti Összefoglaló (Puska)
+                </h3>
+                <div id="module-theory" class="text-slate-300 space-y-4 text-sm md:text-base leading-relaxed">
+                    <!-- Theory injected via JS -->
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-emerald-400 flex items-center gap-2">
+                        <i data-lucide="help-circle" class="w-5 h-5"></i> Teszteld a tudásod (10 Kérdés)
+                    </h3>
+                    <span id="quiz-score" class="text-xs md:text-sm font-medium px-3 py-1 bg-slate-700 rounded-lg text-slate-300">
+                        Kitöltve: 0 / 10
+                    </span>
+                </div>
+
+                <form id="quiz-form" class="space-y-6">
+                    <!-- Quiz Questions injected via JS -->
+                </form>
+
+                <div class="mt-8 pt-6 border-t border-slate-700 flex flex-wrap gap-4 justify-between items-center">
+                    <button id="check-btn" onclick="checkAnswers()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg shadow-lg shadow-emerald-900/30 transition flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i> Válaszok Ellenőrzése
                     </button>
-                    <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="px-4 py-2 rounded-xl font-medium text-sm transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
-                        ✍️ Kvíz (10 kérdés)
+                    <button id="reset-btn" onclick="resetQuiz()" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-lg transition flex items-center gap-2">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Kvíz Újrakezdése
                     </button>
                 </div>
             </div>
-        </header>
-
-        <!-- Tab 1: Summary / Puska Content -->
-        <section id="summary-view" class="space-y-6">
-            <div id="summary-content" class="glass-panel p-6 md:p-8 rounded-2xl shadow-xl leading-relaxed text-slate-200">
-                <!-- Dynamic Summary Content loaded here -->
-            </div>
-        </section>
-
-        <!-- Tab 2: Quiz Section -->
-        <section id="quiz-view" class="hidden space-y-6">
-            <div class="glass-panel p-6 rounded-2xl mb-6 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h3 class="text-lg font-bold text-white">Fejezeti Kvíz</h3>
-                    <p class="text-xs text-slate-400">Válaszolj a 10 kérdésre, majd kattints az ellenőrzésre!</p>
-                </div>
-                <div id="quiz-score-badge" class="hidden px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-sm font-semibold">
-                    Eredmény: <span id="score-val" class="text-blue-400">0</span> / 10
-                </div>
-            </div>
-
-            <form id="quiz-form" class="space-y-6">
-                <!-- Dynamic Quiz Questions loaded here -->
-            </form>
-
-            <div class="flex gap-4 pt-4">
-                <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition-all text-center">
-                    Kvíz Ellenőrzése
-                </button>
-                <button type="button" onclick="resetQuiz()" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl transition-all">
-                    Újraindítás
-                </button>
-            </div>
-        </section>
+        </div>
     </main>
 
     <script>
-        /* MODULE DATA STRUCTURE CONTAINING SUMMARIES AND 10-QUESTION QUIZZES EACH */
         const modulesData = [
             {
                 id: 1,
-                title: "Az adatfeldolgozás alapfogalmai",
-                badge: "1. Modul (162–163. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adat és Információ</h3>
-                            <p><strong class="text-blue-300">Adat:</strong> Értelmezhető ismeret; valamilyen tény valamilyen formában való megjelenése, melyet rögzíteni, tárolni, átalakítani, továbbítani tudunk.</p>
-                            <p class="mt-2"><strong class="text-blue-300">Információ:</strong> Az adatokon végrehajtott gondolati műveletek értelmezett eredménye, mely új ismeretet nyújt (értéke függ a meglévő előismeretektől).</p>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Alaphalmaz és Szűkítés</h3>
-                            <p><strong>Alaphalmaz:</strong> A világ végtelen sok eleme, azok tulajdonságai és jellemzői.</p>
-                            <p class="mt-1"><strong>A szűkítés lépései:</strong></p>
-                            <ul class="list-disc list-inside space-y-1 pl-2 text-slate-300 mt-1">
-                                <li>Nyilvántartandó adatok halmazának meghatározása (egyértelműen el kell tudni dönteni, hogy egy elem beletartozik-e; egy elem csak egyszer szerepelhet).</li>
-                                <li>A konkrét adathalmaznál szűkítjük az egyes elemek tulajdonságait (csak a fontos tulajdonságokat tartjuk meg).</li>
-                            </ul>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adatbank vs. Adatbázis</h3>
-                            <p><strong class="text-blue-300">Adatbank:</strong> Az adatbázis és a kezeléséhez szükséges szoftverek együttes rendszere. Egy szakterület egységesen tárolt adatainak gyűjteménye, ahol visszakeresési kulcs alapján minden adat lekérdezhető.</p>
-                            <p class="mt-2"><strong class="text-blue-300">Adatbázis:</strong> Az adatbank adattárolásának módja, amelyhez speciális kérdező-nyelv (pl. SQL) segítségével férhetünk hozzá. Elemi egysége a <em>bit</em>, alapegysége a <em>byte</em>.</p>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adattípusok</h3>
-                            <div class="grid md:grid-cols-2 gap-4 mt-2">
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-semibold text-emerald-400">Elemi adattípusok:</h4>
-                                    <ul class="list-disc list-inside mt-1 text-sm space-y-1">
-                                        <li>Szám (fix- és lebegőpontos)</li>
-                                        <li>Karakter</li>
-                                        <li>Logikai</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-semibold text-emerald-400">Összetett adattípusok:</h4>
-                                    <ul class="list-disc list-inside mt-1 text-sm space-y-1">
-                                        <li><strong>Tömb (vektor, mátrix):</strong> Azonos típusú elemeket tartalmaz, index alapján érhetők el.</li>
-                                        <li><strong>Rekord:</strong> Különböző típusú elemekből álló, de összetartozó adatszerkezet (pl. Személy: név, lakcím, szül. dátum).</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adatkezelés vs. Adatfeldolgozás</h3>
-                            <p><strong>Adatkezelés:</strong> Olyan műveletek, melyek során <em>nem jutunk új ismerethez</em> (pl. adatbevitel, módosítás, törlés, mentés, nyomtatás).</p>
-                            <p class="mt-2"><strong>Adatfeldolgozás:</strong> Az adatokon végrehajtott olyan műveletek (pl. számlálás, csoportosítás, kiértékelés), melyek eredményeként <em>új információhoz jutunk</em>.</p>
-                        </div>
-                    </div>
+                title: "Az adatfeldolgozás alapfogalmai és adattípusok",
+                page: "2. lap / 162. oldal",
+                theory: `
+                    <p><strong>Adat:</strong> Értelmezhető ismeret; valamilyen tény valamilyen formában való megjelenése, amelyet rögzíteni, tárolni, átalakítani, továbbítani tudunk.</p>
+                    <p><strong>Alaphalmaz:</strong> A világ végtelen sok eleme, azok tulajdonságai, jellemzői.</p>
+                    <p><strong>Szűkítés:</strong> 1. Nyilvántartandó adatok halmazának meghatározása (egyértelmű eldönthetőség, egy elem csak egyszer). 2. Konkrét tulajdonságok szűkítése (csak a fontos tulajdonságok megtartása).</p>
+                    <p><strong>Információ:</strong> Az adatokon végrehajtott gondolati műveletek értelmezett eredménye, amely új ismeretet nyújt (függ az előismeretektől).</p>
+                    <p><strong>Adatbank:</strong> Az adatbázis és a kezeléséhez szükséges szoftverek együttese. Egy szakterület egységes módon tárolt adatainak gyűjteménye, ahol minden adat visszakereshető a visszakeresési kulcs alapján.</p>
+                    <p><strong>Adatbázis:</strong> Az adatbank adattárolásának módja. Speciális kérdező-nyelvvel érhető el. Elemi egysége a bit, alapegysége a byte.</p>
+                    <p><strong>Adattípusok:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Elemi:</strong> Szám (fix, lebegőpontos), Karakter, Logikai.</li>
+                        <li><strong>Összetett:</strong> <em>Tömb</em> (azonos típusú elemek index-szel, pl. tanuló(1)), <em>Rekord</em> (különböző típusú, de összetartozó adatok, pl. személy: név, lakás, szül. dátum).</li>
+                    </ul>
                 `,
-                questions: [
-                    {
-                        q: "Mi a definíciója az 'Adat'-nak a tananyag alapján?",
-                        options: [
-                            "Az adatokon végrehajtott gondolati műveletek értelmezett eredménye",
-                            "Értelmezhető ismeret, tények rögzíthető és tárolható megjelenése",
-                            "A számítógép memóriájában tárolt összetett fájlstruktúra",
-                            "Egy speciális leíró nyelv utasításkészlete"
-                        ],
-                        correct: 1,
-                        explanation: "Az adat egy értelmezhető ismeret, tények rögzíthető megjelenési formája. Az adaton végrehajtott gondolati művelet eredménye már az Információ."
-                    },
-                    {
-                        q: "Miben különbözik az 'Információ' az 'Adattól'?",
-                        options: [
-                            "Az információ mindig számadat, míg az adat szöveges",
-                            "Az információ az adatok értelmezett eredménye, ami új ismeretet nyújt",
-                            "Az információ kisebb tárolóhelyet foglal, mint az adat",
-                            "Nincs különbség, a két fogalom szinoníma"
-                        ],
-                        correct: 1,
-                        explanation: "Az információ az adatok feldolgozása/értelmezése során keletkező új ismeret."
-                    },
-                    {
-                        q: "Mi alkotja az 'Adatbank'-ot?",
-                        options: [
-                            "Kizárólag az adatbázisban tárolt fájlok összessége",
-                            "Az adatbázis és a kezeléséhez szükséges szoftverek együttese",
-                            "A hálózati szerverek fizikai memóriája",
-                            "A törölt adatok biztonsági mentése"
-                        ],
-                        correct: 1,
-                        explanation: "Az adatbank a tárolt adatbázis ÉS az azt kezelő szoftverkörnyezet együttese."
-                    },
-                    {
-                        q: "Mi az adatbázis alapegysége?",
-                        options: ["Bit", "Byte", "Rekord", "Mező"],
-                        correct: 1,
-                        explanation: "Az adatbázis elemi egysége a bit, míg az alapegysége a Byte."
-                    },
-                    {
-                        q: "Melyik számít összetett adattípusnak?",
-                        options: ["Karakter", "Logikai", "Rekord", "Fixpontos szám"],
-                        correct: 2,
-                        explanation: "A Rekord összetett adattípus, mert különböző típusú adatelemekből tevődik össze."
-                    },
-                    {
-                        q: "Melyik kijelentés igaz a tömbre (vektor/mátrix)?",
-                        options: [
-                            "Különböző típusú elemeket tartalmaz, név alapján indexelve",
-                            "Azonos típusú elemeket tartalmaz, melyekhez index alapján férünk hozzá",
-                            "Nem tárolható számítógépes memóriában",
-                            "Csupán egyetlen logikai értéket tárolhat"
-                        ],
-                        correct: 1,
-                        explanation: "A tömb szigorúan azonos típusú adatelemek indexelhető gyűjteménye."
-                    },
-                    {
-                        q: "Melyik művelet tartozik az ADATKEZELÉS fogalmába?",
-                        options: [
-                            "Statisztikai kiértékelés",
-                            "Adatok csoportosítása és átlagolása",
-                            "Adatbevitel, módosítás, törlés és mentés",
-                            "Új összefüggések elemzése"
-                        ],
-                        correct: 2,
-                        explanation: "Az adatkezelés során nem keletkezik új ismeret (pl. mentés, törlés, adatbevitel)."
-                    },
-                    {
-                        q: "Melyik művelet számít ADATFELDOLGOZÁS-nak?",
-                        options: [
-                            "Fájl elmentése a merevlemezre",
-                            "Rekord törlése a táblázatból",
-                            "Adatok számlálása, csoportosítása, kiértékelése",
-                            "Nyomtatás papírra"
-                        ],
-                        correct: 2,
-                        explanation: "Az adatfeldolgozás műveleteivel (pl. számlálás, kiértékelés) új információhoz jutunk."
-                    },
-                    {
-                        q: "Mi igaz a nyilvántartandó adathalmaz szűkítésére?",
-                        options: [
-                            "Egy elem többször is szerepelhet a halmazban",
-                            "Egyértelműen el kell tudni dönteni, hogy az elem a halmazba tartozik-e, és egy elem csak egyszer szerepelhet",
-                            "Minden tulajdonságot meg kell tartani a szűkítéskor",
-                            "A szűkítést követően csak számtípusú adatok maradhatnak"
-                        ],
-                        correct: 1,
-                        explanation: "A halmaz definíciója szerint az elemek egyértelműen azonosíthatók és egy elem csak egyszer fordulhat elő."
-                    },
-                    {
-                        q: "Hogyan érhetők el az adatok egy adatbázisban?",
-                        options: [
-                            "Kizárólag operációs rendszer szintű fájlmásolással",
-                            "Speciális kérdező-nyelv (pl. SQL) segítségével",
-                            "Csak bináris kódsorok manuális beírásával",
-                            "Webes keresőmotorokon keresztül"
-                        ],
-                        correct: 1,
-                        explanation: "Az adatbázisokban tárolt adatokhoz speciális kérdező-nyelvvel (pl. SQL) lehet hozzáférni."
-                    }
+                quiz: [
+                    { q: "Mi az adat definíciója?", a: ["Értelmezhető ismeret, tény rögzíthető megjelenése", "Feldolgozott új gondolati eredmény", "A szoftverek és gépek összessége", "Egy bit sorozat az adatbázisban"], c: 0, e: "Az adat rögzíthető, tárolható tény vagy értelmezhető ismeret." },
+                    { q: "Miben különbözik az információ az adattól?", a: ["Nincs különbség", "Az információ gondolati művelet eredménye, ami új ismeretet nyújt", "Az adat mindig szám, az információ szöveg", "Az információ az elemi egység"], c: 1, e: "Az információ az adatokon végrehajtott műveletek értelmezett eredménye, ami új ismeretet ad." },
+                    { q: "Mi jellemzi a szűkítés 1. lépését?", a: ["Csak a fontos tulajdonságok megtartása", "Egyértelműen el kell tudni dönteni, hogy az elem a halmazba tartozik-e", "Az adatok átalakítása bájtokká", "A rekordok indexelése"], c: 1, e: "Az 1. lépésben határozzuk meg a halmazt, ahol egy elem csak egyszer szerepelhet." },
+                    { q: "Mi az adatbank?", a: ["Egy speciális programozási nyelv", "Az adatbázis és a kezeléséhez szükséges szoftverek együttese", "A számítógép memóriája", "A mentett állományok mappája"], c: 1, e: "Az adatbank a tárolt adatok és az azokat kezelő szoftverek egységes rendszere." },
+                    { q: "Mi az adatbázis alapegysége?", a: ["Bit", "Byte", "Rekord", "Mező"], c: 1, e: "Az elemi egysége a bit, de az alapegysége a byte." },
+                    { q: "Melyik NEM elemi adattípus?", a: ["Logikai", "Karakter", "Rekord", "Fixpontos szám"], c: 2, e: "A rekord összetett adattípus, mert több különböző típusú elemből állhat." },
+                    { q: "Mi jellemez egy tömböt?", a: ["Különböző típusú elemekből áll", "Azonos típusú elemeket tartalmaz, amikhez index alapján férünk hozzá", "Csak logikai értékeket tárolhat", "Nincs rögzített szerkezete"], c: 1, e: "A tömb azonos típusú adatok sora/mátrixa, amelynek elemeit index alapján érjük el." },
+                    { q: "Mi a rekord?", a: ["Azonos típusú elemek halmaza", "Egyetlen bitből álló adat", "Különböző típusú elemekből álló, összetartozó adatszerkezet", "Adatbázis-kezelő szoftver"], c: 2, e: "A rekord összetartozó, de eltérő típusú mezőket fog össze (pl. Név, Lakcím, Kor)." },
+                    { q: "Hogyan érhetők el az adatbázis adatai?", a: ["Kizárólag fájlkezelővel", "Speciális kérdező-nyelv segítségével", "Automatikus nyomtatással", "Bájt alapú tömbindexeléssel"], c: 1, e: "Az adatbázisokhoz speciális kérdező nyelveken (pl. SQL) keresztül férünk hozzá." },
+                    { q: "Hányszor szerepelhet egy elem a szűkítés során meghatározott halmazban?", a: ["Tetszőlegesen sokszor", "Pontosan kétszer", "Csak egyszer", "Nincs korlátozva"], c: 2, e: "A halmazelméleti alapoknak megfelelően egy elem egy halmazban csak egyszer szerepelhet." }
                 ]
             },
             {
                 id: 2,
-                title: "Adatmodellezés és adatszervezés",
-                badge: "2. Modul (164–166. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adatmodellezés</h3>
-                            <p>A valós világ tényeinek és összefüggéseinek kiemelése és leképezése. Az adatmodell az <em>adatok jellemzőivel</em> foglalkozik, és nem az adatok konkrét értékeivel.</p>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">A Modellek Alkotóelemei</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-emerald-400">Egyed (Entity):</strong> Tárgyak, személyek, fogalmak, amelyeket bizonyos jellemzőik felsorolásával határozunk meg (amit jellemezni akarunk).</li>
-                                <li><strong class="text-emerald-400">Tulajdonság (Attribute):</strong> Az egyed jellemzői, specifikus tulajdonságai.</li>
-                                <li><strong class="text-emerald-400">Kapcsolat (Relationship):</strong> Az egyedek közötti viszonyok (két alaphalmaz összekapcsolásával):
-                                    <ul class="list-disc list-inside ml-4 mt-1 text-slate-300 text-sm space-y-1">
-                                        <li><strong>1:1 (Kölcsönös függőség):</strong> pl. Férj – Feleség</li>
-                                        <li><strong>1:N (Funkcionális függőség):</strong> pl. Egy diák – Több kölcsönzött könyv</li>
-                                        <li><strong>M:N (Funkcionális függetlenség):</strong> pl. Tanulók és Könyvtári könyvek</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Az Adatszervezés Alapeszközei (Hiearchia)</h3>
-                            <div class="space-y-2 text-sm bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                <p><strong>1. Jel:</strong> Betűk, számjegyek, írásjelek (a legkisebb önállóan hozzáférhető elemek).</p>
-                                <p><strong>2. Adatelem:</strong> Legkisebb logikai adategység, mely egy vagy több jelből áll.</p>
-                                <p><strong>3. Adatszegmens:</strong> Adatelemek csoportja.</p>
-                                <p><strong>4. Adatrekord:</strong> A logikailag összetartozó adatelemek/szegmensek együttese.</p>
-                                <p><strong>5. Fájl:</strong> A logikailag összetartozó adatrekordok együttese.</p>
-                                <p><strong>6. Adatbázis:</strong> A logikailag összetartozó fájlok gyűjteménye.</p>
-                            </div>
-                        </div>
-                    </div>
+                title: "Adatkezelés, adatfeldolgozás és az adatmodell alapjai",
+                page: "3. lap / 163-165. oldal",
+                theory: `
+                    <p><strong>Adatkezelés:</strong> Olyan műveletek, amelyek elvégzésével <em>NEM</em> jutunk új ismerethez (pl. adatbevitel, módosítás, törlés, mentés, nyomtatás).</p>
+                    <p><strong>Adatfeldolgozás:</strong> Az adatokon végzett műveletek (számlálás, csoportosítás, kiértékelés), amelyek során <em>ÚJ információhoz</em> jutunk.</p>
+                    <p><strong>Adatállomány (fájl):</strong> A számítógépen nyilvántartott adathalmaz (elem + tulajdonság).</p>
+                    <p><strong>Adatmodell:</strong> A valós világ tényeinek és összefüggéseinek kiemelése. Az adatok jellemzőivel foglalkozik, nem a konkrét értékekkel.</p>
+                    <p><strong>Modellek alkotóelemei:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Egyed:</strong> Amit jellemezni akarunk (tárgy, személy, fogalom).</li>
+                        <li><strong>Tulajdonság:</strong> Az egyed jellemzői.</li>
+                        <li><strong>Kapcsolat:</strong> Egyedek közötti viszonyok. Típusai: <code>1:1</code> (kölcsönös függés, pl. férj-feleség), <code>1:N</code> (funkcionális függés, pl. diák-kölcsönzött könyvei), <code>M:N</code> (funkcionális függetlenség, pl. tanulók-könyvtári könyvek).</li>
+                    </ul>
+                    <p><strong>Az adatszervezés alapeszközei (hierarchia):</strong> Jel &rarr; Adatelem &rarr; Adatszegmens &rarr; Adatrekord &rarr; Fájl &rarr; Adatbázis.</p>
                 `,
-                questions: [
-                    {
-                        q: "Mivel foglalkozik az adatmodell?",
-                        options: [
-                            "Az adatok konkrét pillanatnyi értékeivel",
-                            "Az adatok jellemzőivel és összefüggéseivel",
-                            "A hálózati kábelek sávszélességével",
-                            "A felhasználói jelszavak titkosításával"
-                        ],
-                        correct: 1,
-                        explanation: "Az adatmodell a struktúrával és a tulajdonságok jellemzőivel foglalkozik, nem a konkrét értékekkel."
-                    },
-                    {
-                        q: "Mi az 'Egyed' az adatmodellezésben?",
-                        options: [
-                            "A táblázat egyetlen oszlopa",
-                            "Tárgy, személy vagy fogalom, amit jellemezni akarunk",
-                            "Egy speciális lekérdezési utasítás",
-                            "A merevlemez egy fizikai szektora"
-                        ],
-                        correct: 1,
-                        explanation: "Egyed az a létező dolog (személy, tárgy, fogalom), amiről adatokat tárolunk."
-                    },
-                    {
-                        q: "Milyen kapcsolattípus áll fenn a Férj és Feleség között a tananyag szerint?",
-                        options: ["1:N", "M:N", "1:1", "N:1"],
-                        correct: 2,
-                        explanation: "Ez egy 1:1 típusú kapcsolat (kölcsönös függőség)."
-                    },
-                    {
-                        q: "Milyen kapcsolat van egy Diák és az általa kikölcsönzött Könyvek között?",
-                        options: ["1:1", "1:N", "M:N", "Nema létezik kapcsolat"],
-                        correct: 1,
-                        explanation: "Egy diákhoz több kölcsönzött könyv is tartozhat (1:N funkcionális függőség)."
-                    },
-                    {
-                        q: "Milyen kapcsolat van a Tanulók és a Könyvtári könyvek összassága között?",
-                        options: ["1:1", "1:N", "M:N (funkcionális függetlenség)", "0:0"],
-                        correct: 2,
-                        explanation: "Több tanuló több különböző könyvet is kikölcsönözhet az idő során (M:N)."
-                    },
-                    {
-                        q: "Mi a tárolt adatok önállóan hozzáférhető legkisebb eleme?",
-                        options: ["Adatelem", "Jel", "Adatrekord", "Fájl"],
-                        correct: 1,
-                        explanation: "A Jel (betűk, számjegyek, írásjelek) a legkisebb önállóan hozzáférhető elem."
-                    },
-                    {
-                        q: "Mi a legkisebb LOGIKAI adategység?",
-                        options: ["Jel", "Adatelem", "Adatszegmens", "Adatrekord"],
-                        correct: 1,
-                        explanation: "Az Adatelem a legkisebb logikai adategység, amely egy vagy több jelből áll."
-                    },
-                    {
-                        q: "A logikailag összetartozó adatelemek együttese a(z):",
-                        options: ["Adatbázis", "Jel", "Adatrekord", "Adatbank"],
-                        correct: 2,
-                        explanation: "Az összetartozó adatelemek és szegmensek adatrekordot (sor) alkotnak."
-                    },
-                    {
-                        q: "A logikailag összetartozó adatrekordok együttese alkotja a(z):",
-                        options: ["Adatelemet", "Jelt", "Fájlt (adatállományt)", "Adatmodellt"],
-                        correct: 2,
-                        explanation: "A rekordok gyűjteménye a Fájl (adatállomány)."
-                    },
-                    {
-                        q: "A logikailag összetartozó FÁJLOK együttese a(z):",
-                        options: ["Adatbázis", "Adatszegmens", "Adatelem", "Relációs mutató"],
-                        correct: 0,
-                        explanation: "Az adatszervezési hierarchia csúcsán az összetartozó fájlok adatbázist alkotnak."
-                    }
+                quiz: [
+                    { q: "Melyik művelet számít adatkezelésnek?", a: ["Adatok kiértékelése", "Új információ előállítása", "Adatbevitel és mentés", "Statisztikai számlálás"], c: 2, e: "Az adatbevitel, módosítás és mentés során nem keletkezik új információ, így ez adatkezelés." },
+                    { q: "Mi az adatfeldolgozás lényege?", a: ["Adatok biztonságos tárolása", "Új információhoz való jutás műveletek által", "A papír alapú adatok digitalizálása", "A fájlok törlése"], c: 1, e: "Adatfeldolgozás során az adatok rendezése, számlálása révén új ismeretet nyerünk." },
+                    { q: "Mi az egyed az adatmodellben?", a: ["A táblázat egyetlen oszlopa", "Amit jellemezni akarunk (személy, tárgy, fogalom)", "Egy konkrét számérték", "A szoftver egy funkciója"], c: 1, e: "Az egyed (entity) az a valós vagy absztrakt dolog, amiről adatokat tárolunk." },
+                    { q: "Milyen kapcsolattípus van egy diák és a nála lévő kölcsönzött könyvek között?", a: ["1:1", "1:N", "M:N", "Nincs kapcsolat"], c: 1, e: "Egy diákhoz több könyv tartozhat, de egy konkrét példány egyszerre csak egy diáknál van (1:N)." },
+                    { q: "Milyen kapcsolat van a tanulók és a könyvtárban található könyvek között általánosságban?", a: ["1:1", "1:N", "M:N", "N:1"], c: 2, e: "Több tanuló több könyvet is kikölcsönözhet az idő során (M:N független kapcsolat)." },
+                    { q: "Mi a legkisebb önállóan hozzáférhető és szerkeszthető adatszervezési elem?", a: ["Adatelem", "Jel", "Adatrekord", "Fájl"], c: 1, e: "A jel (karakter, számjegy, írásjel) a legkisebb önálló elem." },
+                    { q: "Hogyan épül fel helyesen az adatszervezési hierarchia alulról felfelé?", a: ["Jel -> Adatelem -> Adatszegmens -> Adatrekord -> Fájl -> Adatbázis", "Fájl -> Rekord -> Adatelem -> Jel", "Jel -> Adatrekord -> Adatelem -> Adatbázis", "Adatelem -> Jel -> Fájl -> Adatbázis"], c: 0, e: "A helyes sorrend: Jel -> Adatelem -> Adatszegmens -> Adatrekord -> Fájl -> Adatbázis." },
+                    { q: "Mivel foglalkozik az adatmodell?", a: ["Az adatok konkrét, pillanatnyi értékével", "Az adatok jellemzőivel és szerkezetével", "A kijelző felbontásával", "A winchester forgási sebességével"], c: 1, e: "Az adatmodell a struktúrát és a tulajdonságokat írja le, nem a konkrét adatértékeket." },
+                    { q: "Milyen függőség áll fenn az 1:1 kapcsolatban?", a: ["Kölcsönös függőség", "Funkcionális függőség", "Funkcionális függetlenség", "Semmilyen függőség"], c: 0, e: "Az 1:1 kapcsolatban (pl. férj-feleség a modellben) kölcsönös függés áll fenn." },
+                    { q: "Mi az adatrekord?", a: ["Adatbázisok összessége", "Logikailag összetartozó adatelemek, adatszegmensek együttese", "Egyetlen betű vagy számjegy", "Egy adatbáziskezelő parancs"], c: 1, e: "A rekord a logikailag összetartozó adatelemek csoportja." }
                 ]
             },
             {
                 id: 3,
-                title: "Adatmodell típusok és a relációs modell",
-                badge: "3. Modul (167–170. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Hierarchikus Adatmodell</h3>
-                            <p>Az 1950-es években használták. Az egyedek alá- és fölérendeltségben állnak. <strong>Fastruktúra</strong> jellemzi (gyökér elem, ág, levél). Egy elemhez több is kapcsolódhat, de az alárendelt csak egyhez (1:N aszimmetrikus kapcsolat).</p>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Hálós Adatmodell</h3>
-                            <p>Bármely elem bármely másikkal kapcsolatban lehet (N:M típusú szimmetrikus, de nem egyértelmű kapcsolat). Pl. Termékek és alkatrészek rendszere.</p>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Relációs Adatmodell</h3>
-                            <p>A matematika relációelméletén alapul. Nincsenek kitüntetett egyedek, a tulajdonságok egyenrangúak. Az adatbázis egymással kapcsolatban álló táblázatok együttese.</p>
-                            <ul class="list-disc list-inside mt-2 space-y-1 text-slate-300">
-                                <li><strong>Oszlop = Mező:</strong> Tulajdonságokat határoz meg (név, típus, hossz).</li>
-                                <li><strong>Sor = Rekord:</strong> Egy konkrét egyed tulajdonságainak együttese.</li>
-                                <li><strong>Attribútum:</strong> Egy egyedre vonatkozó konkrét tulajdonság.</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Relációs Táblázat Jellemzői</h3>
-                            <div class="grid md:grid-cols-2 gap-3 text-sm">
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ Nem lehet két azonos sora</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ Egyértelmű, kizárólagos névvel rendelkezik</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ Minden sorban ugyanannyi oszlop van</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ Az oszlopok csak azonos típusú adatot tartalmazhatnak</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ A sorok/oszlopok sorrendje lényegtelen</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800">✓ Mindig létezik azonosító kulcs</div>
-                            </div>
-                        </div>
-                    </div>
+                title: "Adatmodell típusok: Hierarchikus, Hálós és Relációs",
+                page: "4. lap / 167-170. oldal",
+                theory: `
+                    <p><strong>1. Hierarchikus adatmodell:</strong> 1950-es évek, alá-fölérendeltség, fastruktúra. Egy elemhez több is kapcsolódhat, de az alárendelt csak egyhez (1:N, aszimmetrikus). Elemek: <em>gyökér elem, ág, levél</em>.</p>
+                    <p><strong>2. Hálós adatmodell:</strong> Tetszőleges kapcsolatok (N:M, szimmetrikus, nem egyértelmű). Bármely elem bármennyi másikkal kapcsolódhat.</p>
+                    <p><strong>3. Relációs adatmodell:</strong> Relációelméleten alapul. Nincsenek kitüntetett elemek, a tulajdonságok egyenrangúak. Táblázat formában adott:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Oszlop (Mező):</strong> Tulajdonság (név, típus, hossz).</li>
+                        <li><strong>Sor (Rekord):</strong> Konkrét egyed tulajdonságainak együttese.</li>
+                        <li><strong>Attribútum:</strong> Egyed konkrét tulajdonsága.</li>
+                    </ul>
+                    <p><strong>Kulcsok a relációs modellben:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Kulcs (Azonosító):</strong> Egyértelműen azonosít egy sort.</li>
+                        <li><strong>Minimális kulcs:</strong> Egyetlen attribútumot sem hagyhatunk el belőle a beazonosíthatóság elvesztése nélkül.</li>
+                        <li><strong>Szuperkulcs:</strong> A minimálisan elegendőnél több attribútumot tartalmazó kulcs.</li>
+                        <li><strong>Elsődleges kulcs:</strong> Az adott feldolgozáshoz kiválasztott fő azonosító.</li>
+                        <li><strong>Alternáló kulcs:</strong> A nem elsődlegesként választott kulcsok.</li>
+                        <li><strong>Idegen kulcs:</strong> Másik táblával való kapcsolat kiépítésére szolgáló mező.</li>
+                    </ul>
                 `,
-                questions: [
-                    {
-                        q: "Milyen struktúra jellemzi a hierarchikus adatmodellt?",
-                        options: ["Hálózati mátrix", "Fastruktúra", "Láncolt lista", "Relációs kör"],
-                        correct: 1,
-                        explanation: "A hierarchikus adatmodellt fastruktúra (gyökér elem, ágak, levelek) jellemzi."
-                    },
-                    {
-                        q: "Milyen kapcsolat megengedett a hálós adatmodellben?",
-                        options: ["Kizárólag 1:1 kapcsolat", "Tetszőleges N:M kapcsolat", "Csak gyökér-levél kapcsolat", "Nincs kapcsolat az elemek között"],
-                        correct: 1,
-                        explanation: "A hálós adatmodellben bármely elem valahány másikkal kapcsolatban lehet (N:M kapcsolat)."
-                    },
-                    {
-                        q: "Mit jelent a relációs adatmodellben az OSZLOP?",
-                        options: [
-                            "Egy konkrét egyed összes adatát",
-                            "Mezőt, amely egy tulajdonságot határoz meg",
-                            "A teljes adatbázis fájlt",
-                            "A táblázat nevét"
-                        ],
-                        correct: 1,
-                        explanation: "Az oszlop a Mező, amely az egyedek egy adott tulajdonságát írja le."
-                    },
-                    {
-                        q: "Mit képvisel a relációs adatmodellben a SOR?",
-                        options: [
-                            "Egy mezőtípus definícióját",
-                            "Egy konkrét egyed tulajdonságainak együttesét (Rekord)",
-                            "Az adatbázis szoftver nevét",
-                            "Egy SQL lekérdezési paramétert"
-                        ],
-                        correct: 1,
-                        explanation: "A sor a Rekord, ami egyetlen konkrét egyed adatait tartalmazza."
-                    },
-                    {
-                        q: "Mi az attribútum?",
-                        options: [
-                            "Egy egyedre vonatkozó konkrét tulajdonság",
-                            "A táblák közötti fizikai kapcsolat",
-                            "A törölt rekordok helye",
-                            "Egy speciális fájlformátum"
-                        ],
-                        correct: 0,
-                        explanation: "Az attribútum az egyed egy konkrét tulajdonsága."
-                    },
-                    {
-                        q: "Lehet-e két teljesen azonos sor egy relációs táblázatban?",
-                        options: [
-                            "Igen, korlátlanul",
-                            "Nem, nem lehet két azonos sora",
-                            "Igen, ha a típusuk szöveges",
-                            "Csak az 1950-es évek modelljeiben"
-                        ],
-                        correct: 1,
-                        explanation: "A relációs tábla egyik alapkövetelménye, hogy nem tartalmazhat két teljesen azonos sort."
-                    },
-                    {
-                        q: "Számít-e a sorok vagy oszlopok sorrendje a relációs adatmodellben?",
-                        options: [
-                            "A sorok sorrendje számít, az oszlopoké nem",
-                            "Az oszlopok sorrendje kötött, a soroké mindegy",
-                            "A sor- és oszlopsorrend egyaránt lényegtelen",
-                            "Szigorúan ábécé sorrendben kell lenniük"
-                        ],
-                        correct: 2,
-                        explanation: "A relációs modellben a sorok és oszlopok sorrendje matemaikailag lényegtelen."
-                    },
-                    {
-                        q: "Milyen adatokat tartalmazhat egyetlen oszlop?",
-                        options: [
-                            "Bármilyen kevert adattípust sronként",
-                            "Csak azonos típusú adatokat",
-                            "Kizárólag numerikus értékeket",
-                            "Csak más táblákból kimásolt adatokat"
-                        ],
-                        correct: 1,
-                        explanation: "Egy adott oszlopban található minden adatértéknek azonos adattípusúnak kell lennie."
-                    },
-                    {
-                        q: "Vannak-e kitüntetett egyedek a relációs adatmodellben?",
-                        options: [
-                            "Igen, a fastruktúra csúcsán lévő gyökér",
-                            "Nincsenek kitüntetett egyedek, a tulajdonságok egyenrangúak",
-                            "Igen, az első oszlopban lévő adatok",
-                            "Csak akkor, ha hálós modellre épül"
-                        ],
-                        correct: 1,
-                        explanation: "A relációs adatmodellben nincsenek kitüntetett egyedek, a nyilvántartott tulajdonságok egyenrangúak."
-                    },
-                    {
-                        q: "Mi jellemzi a hierarchikus modellt az alárendeltek szempontjából?",
-                        options: [
-                            "Az alárendelt elem több fölérendelthöz is tartozhat",
-                            "Egy alárendelt elem csak egy fölérendelt elemhez kapcsolódhat",
-                            "Minden elem teljesen független egymástól",
-                            "A kapcsolatok szimmetrikusak és visszafordíthatók"
-                        ],
-                        correct: 1,
-                        explanation: "A hierarchikus fastruktúrában az alárendelt (gyermek) csomópont csak egyetlen fölérendelthöz (szülő) tartozhat."
-                    }
+                quiz: [
+                    { q: "Milyen struktúra jellemzi a hierarchikus adatmodellt?", a: ["Mátrix", "Fastruktúra (gyökér, ág, levél)", "Hálózatos gráf", "Relációs tábla"], c: 1, e: "A hierarchikus modellt az alá-fölérendelt fastruktúra jellemzi." },
+                    { q: "Hány felettese (fölérendeltje) lehet egy elemnek a hierarchikus modellben?", a: ["Tetszőlegesen sok", "Pontosan egy", "Legfeljebb kettő", "Egy sem"], c: 1, e: "Az alárendelt elem csak egy feletteshez kapcsolódhat (1:N aszimmetrikus)." },
+                    { q: "Mi jellemzi a hálós adatmodell kapcsolattípusát?", a: ["Csak 1:1 kapcsolat engedélyezett", "N:M típusú, tetszőleges kapcsolatok", "Nincsenek benne kapcsolatok", "Szigorúan hierarchikus"], c: 1, e: "A hálós modellben bármely elem valahány másikkal kapcsolatban lehet (N:M)." },
+                    { q: "Minek felel meg a relációs adatmodellben az oszlop?", a: ["Rekordnak", "Mezőnek / Attribútumnak", "Adatbázisnak", "Gyökér elemnek"], c: 1, e: "Az oszlopok képviselik a mezőket/attribútumokat (tulajdonságokat)." },
+                    { q: "Melyik állítás IGAZ a relációs táblázatra?", a: ["Lehet két azonos sora", "A sorok és oszlopok sorrendje lényegtelen", "Az oszlopok különböző típusú adatokat tartalmazhatnak", "Nincs benne kulcs"], c: 1, e: "A relációs táblákban a sorok és oszlopok fizikai sorrendje nem számít." },
+                    { q: "Mi a minimális kulcs?", a: ["Olyan kulcs, amiből egy attribútumot elhagyva megszűnik az egyértelmű azonosítás", "A legkisebb méretű számmező", "Az elsődleges kulcs utáni másodlagos kulcs", "A tábla legelső oszlopja"], c: 0, e: "A minimális kulcs nem tartalmaz felesleges attribútumot az azonosításhoz." },
+                    { q: "Mi a szuperkulcs?", a: ["A legfontosabb adatbázis kód", "A minimális kulcsnál több attribútumot tartalmazó azonosító halmaz", "Olyan kulcs, ami több adatbázist nyit", "A hálós adatmodell kulcsa"], c: 1, e: "Szuperkulcs minden olyan attribútum-együttes, amely egyértelműen azonosít, de tartalmazhat felesleges elemet is." },
+                    { q: "Mi az idegen kulcs feladata?", a: ["A tábla törlése", "Másik táblával való kapcsolat kiépítése", "A sorok számlálása", "Titkosítás"], c: 1, e: "Az idegen kulcs egy másik tábla elsődleges kulcsára hivatkozva teremt kapcsolatot." },
+                    { q: "Vannak-e kitüntetett elemek a relációs adatmodellben?", a: ["Igen, a gyökér elem", "Nincsenek, a nyilvántartott tulajdonságok egyenrangúak", "Igen, a legelső rekord", "Csak a hálós elemek"], c: 1, e: "A relációs modellben nincsenek kitüntetett egyedek, minden tulajdonság egyenrangú." },
+                    { q: "Mi az alternáló (másodlagos) kulcs?", a: ["A hibás kulcs", "Az elsődleges kulcson kívüli egyéb lehetséges kulcsok", "Az idegen kulcs szinonimája", "Egy hiányzó adat azonosítója"], c: 1, e: "Az alternáló kulcsok azok a jelölt kulcsok, amelyeket nem választottunk ki elsődleges kulcsnak." }
                 ]
             },
             {
                 id: 4,
-                title: "Kulcsok és adatállományok kapcsolása",
-                badge: "4. Modul (170–173. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Kulcsfogalmak (Azonosítók)</h3>
-                            <div class="space-y-3 text-sm">
-                                <p><strong class="text-emerald-400">Kulcs (Azonosító):</strong> A táblázat bármely sorát egyértelműen meghatározza.</p>
-                                <p><strong class="text-emerald-400">Minimális kulcs:</strong> Ha az attribútumok közül egyet is elhagyva már nem egyértelmű a beazonosítás.</p>
-                                <p><strong class="text-emerald-400">Szuperkulcs:</strong> Ha a minimálisan elegendő kulcsnál több attribútumot veszünk figyelembe.</p>
-                                <p><strong class="text-emerald-400">Elsődleges kulcs (Primary Key):</strong> Egy adatfeldolgozási feladat végrehajtásához kiválasztott fő azonosító kulcs.</p>
-                                <p><strong class="text-emerald-400">Alternáló (másodlagos) kulcs:</strong> Az elsődleges kulcson kívül fennmaradó egyéb egyedi kulcsok.</p>
-                                <p><strong class="text-emerald-400">Idegen kulcs (Foreign Key):</strong> Másik táblával való speciális kapcsolat kiépítésére szolgáló mező.</p>
-                            </div>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Kapcsolómező és Állományok</h3>
-                            <p><strong>Kapcsolómező:</strong> Táblázatok összekapcsolására szolgál. Mindkét táblában szerepelnie kell, és <em>legalább az egyikben kulcsmezőnek kell lennie</em>.</p>
-                            <p class="mt-2"><strong>Alapállomány vs. Kapcsolati állomány:</strong></p>
-                            <p class="text-sm text-slate-300">Egy táblába az állandó adatokat (pl. TANULÓ), míg a kapcsolódó táblákba a változó/gyakran frissülő adatokat (pl. TANULÁS) érdemes szervezni.</p>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Hivatkozási Integritás & Kaszkád Törlés</h3>
-                            <p><strong>Hivatkozási feltétel:</strong> Nem létezhet olyan idegen kulcs érték, amely nem egyezik meg a hivatkozott tábla valamely elsődleges kulcsértékével.</p>
-                            <p class="mt-2"><strong>Törlési opciók:</strong></p>
-                            <ul class="list-disc list-inside text-sm space-y-1 text-slate-300">
-                                <li><em>Korlátozott törlés:</em> A hivatkozott elem csak akkor törölhető, ha nincs rá hivatkozás az idegen kulcsos táblában.</li>
-                                <li><em>Kaszkád (sorozatos) törlés:</em> Ha a hivatkozott táblából törlünk egy sort, a hivatkozó tábla összes kapcsolódó sora automatikusan törlődik.</li>
-                            </ul>
-                        </div>
-                    </div>
+                title: "Adatállományok kapcsolása és adatműveletek",
+                page: "5. lap / 171-173. oldal",
+                theory: `
+                    <p><strong>Kapcsolómező:</strong> A táblák összekapcsolására szolgál. Mindkét táblában szerepelnie kell, és legalább az egyikben kulcsmezőként.</p>
+                    <p><strong>Miért kell kapcsolni a táblákat?</strong> Nagy adathalmaznál egyetlen tábla áttekinthetetlen lenne. Az állandó adatokat (pl. TANULÓ) külön táblába tesszük, a gyakran változókat (pl. JEGYEK) másikba. Így a hozzáférés is korlátozható.</p>
+                    <p><strong>Hivatkozási feltételek (Integritás):</strong> Nem lehet olyan idegen kulcs érték a hivatkozó táblában, amely nem létezik elsődleges kulcsként a hivatkozott táblában.</p>
+                    <p><strong>Adatok változtatása:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Új adat felvétele:</strong> Hivatkozott táblába bármikor felvehető. Hivatkozó táblába csak létező kulcsértékkel vehető fel sor.</li>
+                        <li><strong>Törlés és módosítás:</strong>
+                            <br>- <em>Korlátozott törlés:</em> A hivatkozott elem nem törölhető, ha van rá hivatkozás a hivatkozó táblában.
+                            <br>- <em>Kaszkád (sorozatos) törlés:</em> A hivatkozott elem törlésekor a hivatkozó tábla kapcsolódó sorai is automatikusan törlődnek.
+                        </li>
+                    </ul>
                 `,
-                questions: [
-                    {
-                        q: "Mi a 'Minimális kulcs' definíciója?",
-                        options: [
-                            "A legkisebb karakterhosszúságú mező",
-                            "Olyan azonosító, amelyből egyetlen attribútumot elhagyva megszűnik az egyértelmű azonosítás",
-                            "A táblázat utolsó oszlopa",
-                            "A leg kevesebb rekordot tartalmazó tábla"
-                        ],
-                        correct: 1,
-                        explanation: "Minimális kulcs esetén az attribútumhalmazból semmi nem hagyható el anélkül, hogy az egyediség el ne veszne."
-                    },
-                    {
-                        q: "Mi a Szuperkulcs?",
-                        options: [
-                            "A minimálisan elegendő kulcsnál több attribútumot tartalmazó kulcs",
-                            "A titkosított mesterkulcs",
-                            "Kizárólag számadatot tartalmazó kulcs",
-                            "Az SQL adatbázis adminisztrátori jelszava"
-                        ],
-                        correct: 0,
-                        explanation: "Ha egy minimális kulcshoz további felesleges attribútumokat adunk, szuperkulcsot kapunk."
-                    },
-                    {
-                        q: "Mi az 'Idegen kulcs' szerepe?",
-                        options: [
-                            "Másik adatbázisból származó biztonsági kód",
-                            "Speciális kapcsolat kiépítésére szolgál egy másik táblával",
-                            "A hibás sorok megjelölése",
-                            "A hálózati ip-cím tárolása"
-                        ],
-                        correct: 1,
-                        explanation: "Az idegen kulcs egy másik tábla elsődleges kulcsára hivatkozva teremt kapcsolatot a táblák között."
-                    },
-                    {
-                        q: "Mi a feltétele a kapcsolómezőnek két tábla összekötésekor?",
-                        options: [
-                            "Nem számít, hol szerepel",
-                            "Mindkét táblában szerepelnie kell, és legalább az egyikben kulcsmezőnek kell lennie",
-                            "Csak az egyik táblában kell léteznie",
-                            "Szigorúan numerikus típusúnak kell lennie"
-                        ],
-                        correct: 1,
-                        explanation: "Az összekapcsolás feltétele a közös mező jelenléte, amely legalább az egyik táblában kulcs."
-                    },
-                    {
-                        q: "Mi az Alternáló kulcs?",
-                        options: [
-                            "Az elsődleges kulcson kívüli egyéb egyedi kulcsok",
-                            "Az adatbázis megváltozott neve",
-                            "Olyan kulcs, ami naponta megváltozik",
-                            "A törölt rekordok helyettesítője"
-                        ],
-                        correct: 0,
-                        explanation: "A másodlagos vagy alternáló kulcsok az elsődleges kulcsnak nem választott egyéb kulcsjelöltek."
-                    },
-                    {
-                        q: "Milyen adatokat érdemes az ALAPÁLLOMÁNYBAN tárolni?",
-                        options: [
-                            "A naponta változó adatokat",
-                            "Az állandó, ritkán változó adatokat (pl. Tanuló személyi adatai)",
-                            "Kizárólag a lekérdezések eredményét",
-                            "Az SQL szkripteket"
-                        ],
-                        correct: 1,
-                        explanation: "Az alapállomány a törzsadatokat (állandó adatokat) tárolja az áttekinthetőség és a redundancia-csökkentés érdekében."
-                    },
-                    {
-                        q: "Mit ír elő a hivatkozási integritási feltétel?",
-                        options: [
-                            "Minden sorban kell lennie szöveges mezőnek",
-                            "Nem létezhet olyan idegen kulcs érték, aminek nincs megfelelője a hivatkozott táblázat elsődleges kulcsában",
-                            "Az idegen kulcs értéke mindig nulla kell legyen",
-                            "A hivatkozott táblát naponta törölni kell"
-                        ],
-                        correct: 1,
-                        explanation: "Integritás védelme: az idegen kulcs nem mutathat nem létező elsődleges kulcsértékre."
-                    },
-                    {
-                        q: "Mi történik KASZKÁD törlés esetén?",
-                        options: [
-                            "A törlés megtagadva üzenet jelenik meg",
-                            "A hivatkozott sor törlésekor a hivatkozó tábla kapcsolódó sorai is automatikusan törlődnek",
-                            "Csak az elsődleges kulcs törlődik, a többi mező megmarad",
-                            "A rendszer lefagy"
-                        ],
-                        correct: 1,
-                        explanation: "Kaszkád törlésnél a szülő rekord törlése automatikusan törli az összes hozzá tartozó gyermek rekordot."
-                    },
-                    {
-                        q: "Mi a korlátozott törlés lényege?",
-                        options: [
-                            "A törlés csak akkor engedélyezett, ha a törlendő elemre nem hivatkozik egyetlen idegen kulcs sem",
-                            "Csak az adminisztrátor törölhet",
-                            "Naponta maximum 5 sor törölhető",
-                            "A törölt adatok 24 óra múlva visszatöltődnek"
-                        ],
-                        correct: 0,
-                        explanation: "Korlátozott törlés megvédi az adatkapcsolatokat: addig nem törölhető az elsődleges rekord, míg gyermek rekord hivatkozik rá."
-                    },
-                    {
-                        q: "Milyen táblába írható be korlátozás nélkül új adat?",
-                        options: [
-                            "A hivatkozott (szülő) táblába új sor szabadon beírható",
-                            "A hivatkozó táblába bármilyen idegen kulccsal",
-                            "Egyik táblába sem írható új adat",
-                            "Csak ha a tábla teljesen üres"
-                        ],
-                        correct: 0,
-                        explanation: "A hivatkozott (szülő) táblába beírható új rekord, de a hivatkozó táblába csak létező szülő-kulccsal vehető fel új tétel."
-                    }
-                ]
-            },
-            {
-                id: 5,
-                title: "Redundancia, anomáliák és függőségek",
-                badge: "5. Modul (174–177. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adatbázis Hibalehetőségek</h3>
-                            <ul class="space-y-2 text-sm">
-                                <li><strong class="text-rose-400">Redundancia:</strong> Többszörösen tárolt adatok, ismétlődések, melyek új információt nem hordoznak.</li>
-                                <li><strong class="text-rose-400">Inkonzisztencia:</strong> Ellentmondásos állapot az adatbázisban (pl. ha a redundáns adatok közül csak az egyiket módosítjuk).</li>
-                                <li><strong class="text-emerald-400">Integritás:</strong> Az adatkapcsolatok sérülésmentessége és helyessége.</li>
-                            </ul>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Anomáliák (Működési Rendellenességek)</h3>
-                            <div class="space-y-2 text-sm">
-                                <p><strong>1. Módosítási anomália:</strong> Egy adat módosításakor a tábla összes redundáns sorát át kell vizsgálni, különben inkonzisztencia keletkezik.</p>
-                                <p><strong>2. Törlési anomália:</strong> Egy felesleges adat törlésekor nem kívánt, értékes információk is elvesznek.</p>
-                                <p><strong>3. Bővítési anomália:</strong> Új adat felvitele nem lehetséges anélkül, hogy más, még nem létező adatot is meg kellene adni.</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Funkcionális Függőségek</h3>
-                            <div class="space-y-3 text-sm bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                <p><strong>Funkcionális függőség:</strong> 'A' attribútum meghatározza 'B' attribútumot, ha 'A' azonos értékeihez mindig 'B' ugyanazon értéke tartozik.</p>
-                                <p><strong>Teljes funkcionális függőség:</strong> 'B' függ 'A' összetett kulcstól, de 'A' egyetlen részhalmazától sem függ önmagában.</p>
-                                <p><strong>Részleges funkcionális függőség:</strong> 'B' az összetett 'A' kulcs egy részétől is függ.</p>
-                                <p><strong>Tranzitív funkcionális függőség:</strong> Ha A &rarr; B és B &rarr; C, akkor C tranzitívan függ A-tól.</p>
-                            </div>
-                        </div>
-                    </div>
-                `,
-                questions: [
-                    {
-                        q: "Mi a Redundancia jelentése?",
-                        options: [
-                            "Adatvesztés a hálózaton",
-                            "Többszörösen tárolt adatok és felesleges ismétlődések",
-                            "Az adatok titkosítása",
-                            "Gyorsított adatlekérdezési eljárás"
-                        ],
-                        correct: 1,
-                        explanation: "A redundancia az adatok felesleges többszörös tárolását jelenti."
-                    },
-                    {
-                        q: "Mikor keletkezik Inkonzisztencia?",
-                        options: [
-                            "Ha a redundáns adatok közül csak az egyiket módosítják, így azok ellentmondásba kerülnek",
-                            "Ha kikapcsolják a számítógépet",
-                            "Ha az SQL lekérdezés túl sok sort ad vissza",
-                            "Ha az adatok mentése sikeres"
-                        ],
-                        correct: 0,
-                        explanation: "Inkonzisztencia (ellentmondásosság) akkor lép fel, ha az ismételt adatok egy része frissül, a többi nem."
-                    },
-                    {
-                        q: "Mi a Törlési Anomália?",
-                        options: [
-                            "Nem lehet semmit törölni a táblából",
-                            "Adott sor törlésekor olyan információ is elveszik, amit meg kellett volna tartani",
-                            "A törölt fájlok visszakerülnek a lomtárba",
-                            "A törlés lassabb, mint a beszúrás"
-                        ],
-                        correct: 1,
-                        explanation: "Törlési anomália esetén a felesleges tétel eltávolításakor hasznos adat is megsemmisül a rossz struktúra miatt."
-                    },
-                    {
-                        q: "Mi a Bővítési Anomália?",
-                        options: [
-                            "Betelt a merevlemez",
-                            "Új adat felvitele nem lehetséges más, még nem létező adatok kényszerű megadása nélkül",
-                            "Nem lehet új oszlopot hozzáadni az SQL-ben",
-                            "A bővítés fizikai memória hibát okoz"
-                        ],
-                        correct: 1,
-                        explanation: "Bővítési anomália akkor van, ha a rossz szerkezet miatt nem tudunk egy rekordot felvenni hiányzó mellékadatok miatt."
-                    },
-                    {
-                        q: "Mi a Módosítási Anomália?",
-                        options: [
-                            "A módosítás automatikusan törli a táblát",
-                            "Egy érték megváltoztatásához a tábla összes redundáns sorát át kell keresni és módosítani",
-                            "A módosítások nem mentődnek el",
-                            "Csak az adminisztrátor módosíthat"
-                        ],
-                        correct: 1,
-                        explanation: "Módosításkor minden ismétlődést egyenként kell frissíteni, különben az adatbázis inkonzisztenssé válik."
-                    },
-                    {
-                        q: "Mikor beszélünk Funkcionális Függőségről?",
-                        options: [
-                            "Ha két oszlopban teljesen eltérő értékek vannak",
-                            "Ha 'A' attribútum azonos értékei esetén 'B' attribútum is mindig ugyanazt az értéket veszi fel",
-                            "Ha a tábla sorai véletlenszerűen rendezettek",
-                            "Ha a kulcs mező üres"
-                        ],
-                        correct: 1,
-                        explanation: "A funkcionális függőség azt jelenti, hogy 'A' értéke egyértelműen meghatározza 'B' értékét."
-                    },
-                    {
-                        q: "Mi a TELJES funkcionális függőség?",
-                        options: [
-                            "B attribútum függ az összetett A kulcstól, de A semelyik valódi részhalmazától nem függ",
-                            "Minden oszlop függ a tábla nevétől",
-                            "Az adatok 100%-a titkosított",
-                            "B attribútum függ az A kulcs egyetlen elemétől is"
-                        ],
-                        correct: 0,
-                        explanation: "Teljes függőségről akkor beszélünk, ha B csak a teljes összetett kulcstól függ, annak részeitől nem."
-                    },
-                    {
-                        q: "Mi a RÉSZLEGES funkcionális függőség?",
-                        options: [
-                            "Ha B attribútum az összetett kulcs valamelyik részhalmazától (részétől) is függ",
-                            "Ha az adatok fele hiányzik",
-                            "Ha a lekérdezés megszakad",
-                            "Ha a függőség csak a hét bizonyos napjain áll fenn"
-                        ],
-                        correct: 0,
-                        explanation: "Részleges függőség esetén egy tulajdonság nem a teljes összetett kulcstól, hanem annak csak egy részétől függ."
-                    },
-                    {
-                        q: "Mi a Tranzitív Funkcionális Függőség?",
-                        options: [
-                            "Ha A -> B és B -> C, így C közvetve függ A-tól",
-                            "Ha A és C között nincs kapcsolat",
-                            "Ha C értéke folyamatosan változik",
-                            "Ha A közvetlenül határozza meg C-t B kihagyásával"
-                        ],
-                        correct: 0,
-                        explanation: "Tranzitív függőség áll fenn, ha A meghatározza B-t, B meghatározza C-t, így C tranzitívan függ A-tól."
-                    },
-                    {
-                        q: "Mit jelent az Adatbázis Integritása?",
-                        options: [
-                            "Az adatok többszörös duplázását",
-                            "Az adatkapcsolatok sérülésmentességét és helyességét",
-                            "A fájlok fizikai méretének csökkentését",
-                            "A hálózati sávszélesség korlátozását"
-                        ],
-                        correct: 1,
-                        explanation: "Integritás = az adatok és kapcsolataik ellentmondásmentessége, helyessége és sérülésmentessége."
-                    }
-                ]
-            },
-            {
-                id: 6,
-                title: "Normalizálás és adatfeldolgozási problémák",
-                badge: "6. Modul (178–183. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">A Normalizálás Célja és Formái</h3>
-                            <p class="text-sm">A normalizálás a táblázatok átalakítása az anomáliák és redundancia elkerülésére.</p>
-                            
-                            <div class="mt-4 space-y-3">
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-bold text-amber-400">0. Normálforma (0. NF):</h4>
-                                    <p class="text-xs text-slate-300 mt-1">Nem normalizált reláció (ismétlődő csoportok, többértékű mezők jelen vannak).</p>
-                                </div>
-
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-bold text-emerald-400">1. Normálforma (1. NF):</h4>
-                                    <ul class="list-disc list-inside text-xs text-slate-300 mt-1 space-y-1">
-                                        <li>Minden oszlopban egyetlen (atomi) attribútumérték áll.</li>
-                                        <li>Nincs két azonos sor; a sorok egyedileg azonosíthatók.</li>
-                                        <li>Az oszlopszám és a sorrend rögzített.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-bold text-emerald-400">2. Normálforma (2. NF):</h4>
-                                    <p class="text-xs text-slate-300 mt-1">1. NF-ban van ÉS minden nem-kulcs attribútum <strong>teljesen funkcionálisan függ</strong> az elsődleges kulcstól (nincs részleges függőség összetett kulcs esetén).</p>
-                                    <p class="text-xs font-semibold text-blue-400 mt-1">Dekompozíció: Táblák szétbontása a 2. NF eléréséhez.</p>
-                                </div>
-
-                                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <h4 class="font-bold text-emerald-400">3. Normálforma (3. NF):</h4>
-                                    <p class="text-xs text-slate-300 mt-1">2. NF-ban van ÉS nincsenek benne az elsődleges kulcstól <strong>tranzitíven függő</strong> attribútumok.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Adatfeldolgozási Problémák (Átfedések)</h3>
-                            <div class="grid md:grid-cols-2 gap-3 text-xs">
-                                <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-800"><strong>Szinoníma:</strong> Azonos tartalmú oszlopok más néven (Rejtett logikai átfedés).</div>
-                                <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-800"><strong>Homoníma:</strong> Különböző tartalmú oszlopok azonos néven (Látszólagos logikai átfedés).</div>
-                                <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-800"><strong>Nyílt logikai átfedés:</strong> Szükséges adatelőfordulás táblák közötti kapcsolat létesítésére.</div>
-                                <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-800"><strong>Fizikai átfedés:</strong> Redundancia (ugyanazon adatok többszörös tárolása).</div>
-                            </div>
-                        </div>
-                    </div>
-                `,
-                questions: [
-                    {
-                        q: "Mi a normalizálás fő célja?",
-                        options: [
-                            "Az adatok titkosítása és jelszavas védelme",
-                            "Az anomáliák megszüntetése és a redundancia csökkentése",
-                            "A merevlemez felgyorsítása",
-                            "A táblázatok törlése az adatbázisból"
-                        ],
-                        correct: 1,
-                        explanation: "A normalizálás szerkezeti átalakítás, melynek célja az anomáliák kiküszöbölése és az adatduplikáció megszüntetése."
-                    },
-                    {
-                        q: "Mi az 1. Normálforma (1. NF) alapfeltétele?",
-                        options: [
-                            "Minden oszlopban csak egyetlen (atomi) attribútumérték szerepelhet és nincs két azonos sor",
-                            "A táblának legalább 100 sorból kell állnia",
-                            "Minden adatnak számnak kell lennie",
-                            "Nem lehet benne idegen kulcs"
-                        ],
-                        correct: 0,
-                        explanation: "1. NF-ban minden mező atomi (többértékű attribútum nem lehet), és a sorok egyedileg azonosíthatók."
-                    },
-                    {
-                        q: "Mikor van egy reláció 2. Normálformában (2. NF)?",
-                        options: [
-                            "Ha 1. NF-ban van, és az összes nem-kulcs attribútum teljesen függ az elsődleges kulcstól",
-                            "Ha nincs benne egyetlen idegen kulcs sem",
-                            "Ha legalább két táblából áll",
-                            "Ha nincsenek benne szöveges adatmezők"
-                        ],
-                        correct: 0,
-                        explanation: "2. NF feltétele az 1. NF ÉS az, hogy ne legyen részleges függőség az összetett kulcstól."
-                    },
-                    {
-                        q: "Mi a Dekompozíció a normalizálás során?",
-                        options: [
-                            "Adatok törlése az adatbázisból",
-                            "A tábla szétbontása több kisebb táblára a magasabb normálforma eléréséhez",
-                            "A fájlok tömörítése zip formátumba",
-                            "Új mezők hozzáadása egy meglévő táblához"
-                        ],
-                        correct: 1,
-                        explanation: "Dekompozíció során az anomáliát okozó táblát szétbontjuk több, kapcsolatban álló táblára."
-                    },
-                    {
-                        q: "Mikor beszélünk 3. Normálformáról (3. NF)?",
-                        options: [
-                            "Ha 2. NF-ban van és nincsenek benne az elsődleges kulcstól tranzitíven függő attribútumok",
-                            "Ha pontosan három oszlopból áll a tábla",
-                            "Ha három különböző adatbázis van összekötve",
-                            "Ha a sorok száma osztható 3-mal"
-                        ],
-                        correct: 0,
-                        explanation: "3. NF feltétele a 2. NF megléte és a tranzitív függőségek teljes felszámolása."
-                    },
-                    {
-                        q: "Mi a 'Szinoníma' az adatfeldolgozásban?",
-                        options: [
-                            "Különböző tartalmú oszlopok azonos néven",
-                            "Azonos tartalmú oszlopok más-más néven (Rejtett logikai átfedés)",
-                            "Hibás SQL utasítás",
-                            "Egy gépelési hiba a tábla nevében"
-                        ],
-                        correct: 1,
-                        explanation: "Szinoníma esetén ugyanazt az adattartalmat eltérő néven tároljuk a táblákban."
-                    },
-                    {
-                        q: "Mi a 'Homoníma' fogalma?",
-                        options: [
-                            "Azonos nevű, de különböző tartalmú oszlopok (Látszólagos logikai átfedés)",
-                            "Teljesen azonos sorok",
-                            "Két egyforma elsődleges kulcs",
-                            "Ugyanaz az adat két fájlban"
-                        ],
-                        correct: 0,
-                        explanation: "Homoníma esetén a mezőnév megegyezik, de a mögötte lévő adattartalom teljesen eltérő."
-                    },
-                    {
-                        q: "Mi a 'Fizikai átfedés'?",
-                        options: [
-                            "A merevlemez sérülése",
-                            "A Redundancia, azaz ugyanazon adatok többszörös tárolása",
-                            "Hálózati ütközés",
-                            "Két tábla fizikai összemásolása"
-                        ],
-                        correct: 1,
-                        explanation: "Fizikai átfedésről akkor beszélünk, ha ugyanazt az adatot többszörösen tároljuk a lemezen (redundancia)."
-                    },
-                    {
-                        q: "Mi a Nyílt logikai átfedés szerepe?",
-                        options: [
-                            "Súlyos hiba, amit azonnal törölni kell",
-                            "Elengedhetetlen a táblák közötti kapcsolatok definiálásához (pl. összekötő kulcsmezők)",
-                            "A felhasználói jelszavak mentése",
-                            "A lemezterület duplázása"
-                        ],
-                        correct: 1,
-                        explanation: "A nyílt logikai átfedés (kulcsok megléte a kapcsolódó táblákban) szükséges a kapcsolat megteremtéséhez."
-                    },
-                    {
-                        q: "Melyik normálformára igaz: 'a tranzitív függés engedélyezett, de a részleges függés nem'?",
-                        options: ["0. NF", "1. NF", "2. NF", "3. NF"],
-                        correct: 2,
-                        explanation: "A 2. NF-ban a részleges függés már meg van szüntetve, de a tranzitív függés még előfordulhat (azt a 3. NF szünteti meg)."
-                    }
-                ]
-            },
-            {
-                id: 7,
-                title: "Az adatbázis megvalósításának lépései",
-                badge: "7. Modul (184. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-4">Az Adatbázis Életciklusa és Lépései</h3>
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">1</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Adatszerkezet tervezése</h4>
-                                        <p class="text-xs text-slate-300">Objektumok definiálása, tulajdonságok és kapcsolatok meghatározása.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">2</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Táblák létrehozása és Adatbevitel</h4>
-                                        <p class="text-xs text-slate-300">Adatok tárolásának biztosítása, adatbevitel sorrendje, adathelyesség ellenőrzése (értéktartomány, elgépelés).</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">3</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Kapcsolatok megadása</h4>
-                                        <p class="text-xs text-slate-300">Az objektumok és táblák közötti viszonyok beállítása (relációk, hivatkozási integritás).</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">4</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Lekérdezések definiálása</h4>
-                                        <p class="text-xs text-slate-300">Adatok kigyűjtése, szűrése és listák készítése különböző szempontok alapján.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">5</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Űrlapok készítése</h4>
-                                        <p class="text-xs text-slate-300">Az adatokhoz való könnyebb, áttekinthetőbb és felhasználóbarát hozzáférés biztosítása.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">6</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Jelentések összeállítása</h4>
-                                        <p class="text-xs text-slate-300">Táblák és lekérdezések adatainak rendezett, esztétikus megjelenítése és nyomtatása.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start gap-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg text-sm">7</span>
-                                    <div>
-                                        <h4 class="font-bold text-white">Adataktualizálás (Frissítés)</h4>
-                                        <p class="text-xs text-slate-300">A megváltozott adatok folyamatos karbantartása és frissítése.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `,
-                questions: [
-                    {
-                        q: "Mi az adatbázis megvalósításának legelső lépése?",
-                        options: [
-                            "Űrlapok tervezése",
-                            "Adatszerkezet tervezése (objektumok, tulajdonságok, kapcsolatok)",
-                            "Adatok nyomtatása jelentésben",
-                            "SQL lekérdezések futtatása"
-                        ],
-                        correct: 1,
-                        explanation: "Az első és legfontosabb lépés mindig a koncepcionális adatszerkezet megtervezése."
-                    },
-                    {
-                        q: "Mire kell ügyelni az adatok táblákba történő bevitele során?",
-                        options: [
-                            "A sorrendre és az adathelyesség ellenőrzésére (értéktartomány, elgépelés)",
-                            "Hogy minden adat csupa nagybetű legyen",
-                            "Hogy ne legyenek számok a táblában",
-                            "Hogy a tábla azonnal kinyomtatásra kerüljön"
-                        ],
-                        correct: 0,
-                        explanation: "Adatbevitelkor kritikus az adathelyesség ellenőrzése és a megfelelő sorrend tartása."
-                    },
-                    {
-                        q: "Melyik lépés következik a táblák létrehozása és az adatbevitel után?",
-                        options: [
-                            "Jelentések nyomtatása",
-                            "Kapcsolatok megadása a táblák között",
-                            "Az adatbázis törlése",
-                            "Űrlapok azonnali bezárása"
-                        ],
-                        correct: 1,
-                        explanation: "A táblák létrehozását a kapcsolatok pontos definíciója követi (3. lépés)."
-                    },
-                    {
-                        q: "Mi a LEKÉRDEZÉSEK célja az adatbázisban?",
-                        options: [
-                            "Új merevlemez formázása",
-                            "Adatok kigyűjtése és listák készítése megadott szempontok szerint",
-                            "Kizárólag az áramellátás ellenőrzése",
-                            "A felhasználói jelszavak módosítása"
-                        ],
-                        correct: 1,
-                        explanation: "A lekérdezések teszik lehetővé az adatok szűrését és kigyűjtését."
-                    },
-                    {
-                        q: "Mire szolgálnak az ŰRLAPOK?",
-                        options: [
-                            "A nyomtató papíradagolásához",
-                            "Az adatokhoz való könnyebb, áttekinthetőbb felhasználói hozzáféréshez és adatbevitelhez",
-                            "Kizárólag az adatok törlésére",
-                            "A háttértár tömörítésére"
-                        ],
-                        correct: 1,
-                        explanation: "Az űrlapok felülete biztosítja a kényelmes és áttekinthető adatbevitelt és megjelenítést."
-                    },
-                    {
-                        q: "Mi a JELENTÉSEK (Reportok) fő funkciója?",
-                        options: [
-                            "Hibajelentések küldése a fejlesztőknek",
-                            "Adatok rendezett, esztétikus megjelenítése és nyomtatása",
-                            "Az SQL nyelv megváltoztatása",
-                            "Új táblák automatikus törlése"
-                        ],
-                        correct: 1,
-                        explanation: "A jelentések az adatok nyomtatási és formázott kiadási felületei."
-                    },
-                    {
-                        q: "Mit jelent az Adataktualizálás (7. lépés)?",
-                        options: [
-                            "A szoftver verziófrissítését",
-                            "A megváltozott valós adatok folyamatos frissítését és karbantartását",
-                            "A hálózati kártya cseréjét",
-                            "A teljes adatbázis újraírását a nulláról"
-                        ],
-                        correct: 1,
-                        explanation: "Az adataktualizálás a valóság változásainak követése az adatok frissítésével."
-                    },
-                    {
-                        q: "Hány fő lépésre bontja a tananyag az adatbázis megvalósítását?",
-                        options: ["3 lépésre", "5 lépésre", "7 lépésre", "10 lépésre"],
-                        correct: 2,
-                        explanation: "A tananyag pontosan 7 egymásra épülő lépésben határozza meg a megvalósítást."
-                    },
-                    {
-                        q: "Melyik elem NEM az adatbázis megvalósításának egyik közvetlen lépése?",
-                        options: [
-                            "Adatszerkezet tervezése",
-                            "Számítógép házának összeszerelése",
-                            "Űrlapok készítése",
-                            "Jelentések összeállítása"
-                        ],
-                        correct: 1,
-                        explanation: "A hardver összeszerelése nem az adatbázis-kezelő megvalósítási lépése."
-                    },
-                    {
-                        q: "Miért fontos az adathelyesség ellenőrzése az adatbevitel során?",
-                        options: [
-                            "Hogy elkerüljük az hibás adatokból eredő torzulásokat és anomáliákat",
-                            "Mert a számítógép másképp kikapcsol",
-                            "Mert az SQL nem fogad el 5 karakternél hosszabb szavakat",
-                            "Nem fontos, utólag nem okozhat problémát"
-                        ],
-                        correct: 0,
-                        explanation: "A hibás adatok megelőzése a beviteli kontrollal az adatbázis integritásának alapja."
-                    }
-                ]
-            },
-            {
-                id: 8,
-                title: "SQL alapok és választó lekérdezések",
-                badge: "8. Modul (185–189. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Az SQL Nyelv Jellemzői</h3>
-                            <p><strong>Structured Query Language:</strong> Strukturált lekérdező nyelv. Utasításait pontosan <code class="text-amber-300 font-mono">;</code> (pontosvessző) zárja le.</p>
-                            <div class="mt-3 space-y-2 text-xs">
-                                <p><strong>DDL (Adatdefiníció):</strong> <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">CREATE</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">ALTER</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">DROP</code></p>
-                                <p><strong>DML (Adatkezelés):</strong> <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">SELECT</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">INSERT</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">UPDATE</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">DELETE</code></p>
-                                <p><strong>DCL (Adatbiztonság):</strong> <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">GRANT</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-blue-300">REVOKE</code></p>
-                            </div>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">A SELECT Lekérdezés Szerkezete</h3>
-                            <pre class="bg-slate-900 p-4 rounded-xl text-xs text-emerald-400 font-mono overflow-x-auto">
-SELECT mezőnevek 
-FROM táblanév
-WHERE feltételek
-GROUP BY csoportosítás
-HAVING csoport_feltétel
-ORDER BY rendezési_sorrend (ASC / DESC);</pre>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Azonosítás és Szűrés Klauzulák</h3>
-                            <ul class="space-y-2 text-sm">
-                                <li><code class="text-amber-300 font-mono">SELECT DISTINCT:</code> Kiszűri a megadott mezőben lévő duplikált értékeket (csak az egyedi mezőértékeket mutatja).</li>
-                                <li><code class="text-amber-300 font-mono">SELECT DISTINCTROW:</code> A teljesen azonos rekordokat szűri ki a kapcsolási lekérdezéseknél.</li>
-                                <li><code class="text-amber-300 font-mono">WHERE:</code> Feltétel megadása (<code class="text-blue-300">AND, OR, NOT, BETWEEN, IN, LIKE</code>).
-                                    <br><span class="text-xs text-slate-400">Pl. WHERE Város LIKE "Jász*" (Jász-al kezdődő városok)</span>
-                                </li>
-                                <li><code class="text-amber-300 font-mono">ORDER BY:</code> Rendezés (<code class="text-blue-300">ASC</code> = növekvő [alapértelmezett], <code class="text-blue-300">DESC</code> = csökkenő).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `,
-                questions: [
-                    {
-                        q: "Mit jelent az SQL rövidítés?",
-                        options: [
-                            "Simple Query Language",
-                            "Structured Query Language",
-                            "System Quality Logic",
-                            "Sequential Quick List"
-                        ],
-                        correct: 1,
-                        explanation: "SQL = Structured Query Language (Strukturált Lekérdező Nyelv)."
-                    },
-                    {
-                        q: "Melyik utasítás tartozik az Adatdefiníciós (DDL) utasítások közé?",
-                        options: ["SELECT", "UPDATE", "CREATE", "INSERT"],
-                        correct: 2,
-                        explanation: "A CREATE adatdefiníciós (DDL) utasítás, új objektumok létrehozására szolgál."
-                    },
-                    {
-                        q: "Milyen karakterrel zárjuk le az SQL utasításokat?",
-                        options: [". (pont)", ": (kettőspont)", "; (pontosvessző)", "! (felkiáltójel)"],
-                        correct: 2,
-                        explanation: "Az SQL utasításokat pontosvessző (;) zárja le."
-                    },
-                    {
-                        q: "Mire szolgál a SELECT DISTINCT kulcsszó?",
-                        options: [
-                            "Minden sort duplán jelenít meg",
-                            "Kiszűri az ismétlődő mezőértékeket, csak az egyedi értékeket adja vissza",
-                            "Törli a táblázat tartalmát",
-                            "Összeadja a mezők értékeit"
-                        ],
-                        correct: 1,
-                        explanation: "A DISTINCT letiltja a megadott mezőben lévő értékek többszöri megjelenítését."
-                    },
-                    {
-                        q: "Melyik klauzula szolgál a rekordok szűrésére a SELECT utasításban?",
-                        options: ["FROM", "WHERE", "ORDER BY", "GROUP BY"],
-                        correct: 1,
-                        explanation: "A WHERE klauzula adja meg a logikai szűrési feltételeket."
-                    },
-                    {
-                        q: "Hogyan rendezhetjük a lekérdezést CSÖKKENŐ sorrendbe?",
-                        options: [
-                            "ORDER BY mező ASC",
-                            "ORDER BY mező DESC",
-                            "SORT BY mező DOWN",
-                            "GROUP BY mező DESC"
-                        ],
-                        correct: 1,
-                        explanation: "A DESC (Descending) kulcsszó állítja be a csökkenő rendezést."
-                    },
-                    {
-                        q: "Mit eredményez a `WHERE Város LIKE 'Jász*'` feltétel?",
-                        options: [
-                            "Csak a pontosan 'Jász' nevű városokat adja vissza",
-                            "Minden olyan várost kigyűjt, amelynek neve 'Jász'-al kezdődik",
-                            "Minden várost kigyűjt, kivéve Jászberényt",
-                            "Hibát ad a csillag karakter miatt"
-                        ],
-                        correct: 1,
-                        explanation: "A LIKE operátor és a '*' joker karakter a 'Jász'-al kezdődő szövegekre illeszkedik."
-                    },
-                    {
-                        q: "Melyik kulcsszóval tartható meg a 10 legértékesebb rekord az ORDER BY mellett?",
-                        options: ["FIRST 10", "SELECT TOP 10", "LIMIT ONLY 10", "MAX 10"],
-                        correct: 1,
-                        explanation: "A SELECT TOP 10... ORDER BY ... DESC az első 10 legmagasabb értékű sort adja vissza."
-                    },
-                    {
-                        q: "Melyik utasításcsoportba tartozik a GRANT és REVOKE?",
-                        options: [
-                            "Adatkezelési utasítások (DML)",
-                            "Adatbiztonsági utasítások (DCL)",
-                            "Adatdefiníciós utasítások (DDL)",
-                            "Oszlopfüggvények"
-                        ],
-                        correct: 1,
-                        explanation: "A GRANT és REVOKE adatbiztonsági (jogosultságkezelő) DCL utasítások."
-                    },
-                    {
-                        q: "Mit jelent a `WHERE [Életkor] Between 18 AND 30` kifejezés?",
-                        options: [
-                            "Az 18-nál fiatalabbakat és 30-nál idősebbeket szűri ki",
-                            "A 18 és 30 év közötti (a határokat is beleértve) rekordokat választja ki",
-                            "Kizárólag a 18 és 30 éveseket választja ki, a köztes életkorokat nem",
-                            "Azt az egyetlen személyt keresi, aki 24 éves"
-                        ],
-                        correct: 1,
-                        explanation: "A BETWEEN annyit tesz, mint a megadott zárt intervallumba (18 és 30 közé) eső értékek kigyűjtése."
-                    }
-                ]
-            },
-            {
-                id: 9,
-                title: "Haladó SQL műveletek és oszlopfüggvények",
-                badge: "9. Modul (190–192. o.)",
-                summary: `
-                    <div class="space-y-6">
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Csoportosítás: GROUP BY és HAVING</h3>
-                            <p><strong>GROUP BY:</strong> Megadott mező szerint csoportosítja a rekordokat.</p>
-                            <p class="mt-2"><strong>HAVING:</strong> A csoportosítás utáni <em>csoportfeltételt</em> adja meg (a WHERE a csoportosítás előtti sorokat szűri!).</p>
-                            <pre class="bg-slate-900 p-3 rounded-xl text-xs text-emerald-400 font-mono mt-2 overflow-x-auto">
-SELECT Tipus, Count(Tipus) FROM Autok
-GROUP BY Tipus
-HAVING Count(Tipus) > 10;</pre>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Oszlopfüggvények (Agregációs Műveletek)</h3>
-                            <div class="grid md:grid-cols-2 gap-3 text-xs">
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800"><code class="text-amber-300 font-mono">COUNT(*):</code> Rekordok/sorok számlálása.</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800"><code class="text-amber-300 font-mono">SUM(mező):</code> Értékek összegzése.</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800"><code class="text-amber-300 font-mono">AVG(mező):</code> Értékek átlagának kiszámítása.</div>
-                                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800"><code class="text-amber-300 font-mono">MAX(mező) / MIN(mező):</code> Legnagyobb / legkisebb érték.</div>
-                            </div>
-                        </div>
-
-                        <div class="border-b border-slate-700/60 pb-4">
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Akció-lekérdezések</h3>
-                            <ul class="space-y-2 text-xs">
-                                <li><strong class="text-emerald-400">Frissítő (UPDATE):</strong> Rekordok értékeinek módosítása (pl. <code class="text-amber-300">UPDATE Dolgozok SET fizetes = fizetes * 1.2</code>).</li>
-                                <li><strong class="text-rose-400">Törlő (DELETE):</strong> Rekordok törlése feltétel alapján (pl. <code class="text-amber-300">DELETE * FROM Auto WHERE Gyartasi_ev < 1980</code>).</li>
-                                <li><strong class="text-blue-400">Táblakészítő (SELECT INTO):</strong> Lekérdezés eredményéből új tábla létrehozása.</li>
-                                <li><strong class="text-purple-400">Hozzáfűző (INSERT INTO ... SELECT):</strong> Kiválasztott rekordok hozzáfűzése meglévő táblához.</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-bold text-blue-400 mb-2">Paraméteres Lekérdezések</h3>
-                            <p class="text-xs">A lekérdezés futtatásakor a felhasználótól kér be értéket szögletes zárójelben megadott üzenettel.</p>
-                            <code class="text-xs text-amber-300 font-mono bg-slate-900 p-2 rounded block mt-1">WHERE Tipus LIKE [Kérem a tipust:] & "*"</code>
-                        </div>
-                    </div>
-                `,
-                questions: [
-                    {
-                        q: "Mire szolgál a GROUP BY klauzula?",
-                        options: [
-                            "A rekordok törlésére csoportosan",
-                            "A rekordok megadott mező(k) szerinti csoportosítására",
-                            "A fájlok tömörítésére",
-                            "A csoporttagok jelszavainak kezelésére"
-                        ],
-                        correct: 1,
-                        explanation: "A GROUP BY a megadott oszlop azonos értékei szerint csoportokba rendezi a sorokat."
-                    },
-                    {
-                        q: "Mi a különbség a WHERE és a HAVING között?",
-                        options: [
-                            "A WHERE az egyes sorokra vonatkozik a csoportosítás előtt, a HAVING pedig a csoportosított adatokra vonatkozó csoportfeltétel",
-                            "Nincs különbség, a kettő szinoníma",
-                            "A HAVING csak számokra használható, a WHERE csak szövegre",
-                            "A WHERE törli az adatokat, a HAVING módosítja"
-                        ],
-                        correct: 0,
-                        explanation: "A WHERE a nyers sorokat szűri a csoportképzés előtt, a HAVING a GROUP BY utáni aggregált csoportokra tesz feltételt."
-                    },
-                    {
-                        q: "Melyik oszlopfüggvény számolja meg a rekordok számát?",
-                        options: ["SUM()", "AVG()", "COUNT()", "MAX()"],
-                        correct: 2,
-                        explanation: "A COUNT() függvény a rekordok/sorok megszámlálására való."
-                    },
-                    {
-                        q: "Melyik oszlopfüggvényt használjuk az értékek átlagának kiszámítására?",
-                        options: ["SUM()", "AVG()", "TOTAL()", "MEAN()"],
-                        correct: 1,
-                        explanation: "Az AVG() (Average) számítja ki a kijelölt mező értékeinek átlagát."
-                    },
-                    {
-                        q: "Melyik SQL utasítással végzünk adatfrissítést (pl. 20%-os fizetésemelés)?",
-                        options: ["CHANGE", "UPDATE", "MODIFY", "REPLACE"],
-                        correct: 1,
-                        explanation: "Az UPDATE utasítással módosíthatók a táblában lévő meglévő adatok (pl. UPDATE Dolgozok SET fizetes = fizetes * 1.2)."
-                    },
-                    {
-                        q: "Mi a DELETE utasítás feladata?",
-                        options: [
-                            "Teljes táblastruktúra megsemmisítése",
-                            "Adott feltételnek megfelelő rekordok (sorok) törlése a táblából",
-                            "Egy mező átnevezése",
-                            "A legutóbbi mentés visszavonása"
-                        ],
-                        correct: 1,
-                        explanation: "A DELETE a feltételnek megfelelő rekordokat törli a táblából."
-                    },
-                    {
-                        q: "Hogyan hozható létre új tábla egy lekérdezés eredményéből?",
-                        options: [
-                            "SELECT ... INTO [ÚjTábla] FROM ...",
-                            "CREATE TABLE AS SELECT ...",
-                            "MAKE TABLE ...",
-                            "EXPORT TO TABLE ..."
-                        ],
-                        correct: 0,
-                        explanation: "A tananyagban megadott Access SQL szintaxis szerint a `SELECT mezők INTO [ÚjTábla] FROM tábla` hoz létre új táblát."
-                    },
-                    {
-                        q: "Mi a Paraméteres lekérdezés jellemzője?",
-                        options: [
-                            "Mindig véletlenszerű adatokat ad vissza",
-                            "A lekérdezés futtatásakor egy párbeszédablakban kéri be a szűrési értéket a felhasználótól",
-                            "Nem tartalmazhat WHERE feltételt",
-                            "Kizárólag éjfélkor futtatható"
-                        ],
-                        correct: 1,
-                        explanation: "A paraméteres lekérdezés futtatáskor rákérdez az értékre (pl. [Kérem a típust:])."
-                    },
-                    {
-                        q: "Mit ad vissza a `SELECT MAX(Érték) FROM Auto WHERE Tipus='Opel'` lekérdezés?",
-                        options: [
-                            "Az Opelek átlagos értékét",
-                            "A legolcsóbb Opel árát",
-                            "A legdrágább Opel értékét",
-                            "Az Opelek darabszámát"
-                        ],
-                        correct: 2,
-                        explanation: "A MAX() függvény az adat halmazban található legnagyobb értéket (a legdrágább Opel árát) adja vissza."
-                    },
-                    {
-                        q: "Melyik utasítást használjuk meglévő táblához más táblából származó rekordok HOZZÁFŰZÉSÉRE?",
-                        options: [
-                            "UPDATE INTO tábla2 SELECT ...",
-                            "INSERT INTO tábla2 SELECT ... FROM tábla1",
-                            "ADD TO tábla2 FROM tábla1",
-                            "JOIN tábla1 TO tábla2"
-                        ],
-                        correct: 1,
-                        explanation: "Az INSERT INTO tábla2 SELECT... utasítással fűzhetők hozzá a kiválasztott sorok egy másik táblához."
-                    }
+                quiz: [
+                    { q: "Hol kell szerepelnie a kapcsolómezőnek?", a: ["Csak az egyik táblában", "Mindkét táblában, és legalább az egyikben kulcsnak kell lennie", "Minden adatbázis fájlban", "Csak az űrlapokon"], c: 1, e: "A kapcsolódáshoz mindkét táblában jelen kell lennie, és legalább az egyik oldalon kulcsnak kell lennie." },
+                    { q: "Miért bontjuk több táblára az adatokat?", a: ["Mert a gép lassabban olvas egy táblát", "Az áttekinthetőség, hatékonyabb frissítés és jogosultságkezelés miatt", "Mert a relációs modell csak 2 oszlopot enged", "Hogy több fájl legyen a lemezen"], c: 1, e: "A szétválasztás csökkenti az ismétlődéseket és áttekinthetővé teszi az adatbázist." },
+                    { q: "Mi a hivatkozási feltétel lényege?", a: ["Az idegen kulcs értéke mindig létező elsődleges kulcsértékre kell mutasson", "Minden mezőben számoknak kell lenniük", "Tilos az adatokat törölni", "Minden táblát jelszóval kell védeni"], c: 0, e: "Nem létezhet árva rekord; az idegen kulcs csak érvényes elsődleges kulcsra hivatkozhat." },
+                    { q: "Milyen sor vehető fel a hivatkozó táblába?", a: ["Bármilyen adat, megkötés nélkül", "Csak olyan, aminek idegen kulcsa megegyezik a hivatkozott tábla egy elsődleges kulcsával", "Csak üres rekord", "Csak új kulccsal rendelkező sor"], c: 1, e: "Csak létező hivatkozással rendelkező sor rögzíthető a hivatkozó táblában." },
+                    { q: "Mi történik korlátozott törlés esetén?", a: ["Minden rekord törlődik a rendszerből", "Nem engedi törölni a hivatkozott elemet, ha van rá hivatkozás", "Automatikusa felülírja az adatokat nullával", "Törli a hivatkozó tábla sorait is"], c: 1, e: "A korlátozott törlés megvédi az adatkapcsolatot azáltal, hogy megtiltja a használt rekord törlését." },
+                    { q: "Mi történik kaszkád törlés esetén?", a: ["A rendszer hibaüzenetet ad", "A hivatkozott elem törlésekor automatikusan törlődik a hivatkozó tábla összes kapcsolódó sora is", "A törölt adatok a kukába kerülnek", "Csak az idegen kulcs mező ürül ki"], c: 1, e: "Kaszkád törlésnél a törlés végiggördül a kapcsolódó táblák függő sorain is." },
+                    { q: "Milyen adatokat érdemes a fő táblában (pl. TANULÓ) tárolni?", a: ["Naponta változó adatokat", "Állandó, ritkán változó adatokat", "A törölt rekordokat", "A nyomtatási beállításokat"], c: 1, e: "A törzsadatbázisban az állandó tulajdonságokat célszerű tárolni." },
+                    { q: "Honnan törölhető korlátozás nélkül bármelyik sor?", a: ["A hivatkozott táblából", "A hivatkozó táblából", "A gyökér elemből", "Egyikből sem"], c: 1, e: "A hivatkozó (gyermek) táblából törölve nem sérül a hivatkozási integritás." },
+                    { q: "Milyen táblát nevezünk hivatkozott táblának?", a: ["Amelyik az idegen kulcsot tartalmazza", "Amelyik az elsődleges kulcsot tartalmazza a kapcsolatban", "Amelyikben nincsenek adatok", "A legkisebb méretű táblát"], c: 1, e: "A hivatkozott (szülő) tábla tartalmazza a hivatkozási alapot adó elsődleges kulcsot." },
+                    { q: "Mi történik, ha sérül a hivatkozási feltétel?", a: ["Inkonzisztens és hibás adatbázis-állapot jön létre", "Gyorsabb lesz az SQL lekérdezés", "Automatikusan törlődik az adatbázis", "Semmi probléma nem történik"], c: 0, e: "Integritási hiba keletkezik, az adatok elveszítik a megbízhatóságukat." }
                 ]
             }
         ];
 
-        /* STATE VARIABLES */
         let currentModuleIndex = 0;
-        let userAnswers = {}; // Format: { moduleIndex: { questionIndex: selectedOptionIndex } }
-        let evaluatedModules = {}; // Format: { moduleIndex: true/false }
+        let userAnswers = {}; // { moduleId: { qIndex: selectedOptionIndex } }
 
-        // Initialize App on DOM Load
-        document.addEventListener("DOMContentLoaded", () => {
+        function initApp() {
             renderNav();
             loadModule(0);
-        });
+        }
 
-        // Render Sidebar Navigation
         function renderNav() {
-            const nav = document.getElementById("nav-container");
-            nav.innerHTML = "";
-
-            modulesData.forEach((mod, idx) => {
-                const btn = document.createElement("button");
-                btn.onclick = () => loadModule(idx);
-                btn.className = `w-full text-left p-3 rounded-xl transition-all flex items-center justify-between text-xs md:text-sm font-medium ${
-                    idx === currentModuleIndex 
-                        ? "bg-blue-600/30 border border-blue-500/50 text-blue-300 shadow-md" 
-                        : "hover:bg-slate-800/80 text-slate-400 hover:text-slate-200"
-                }`;
-
-                const statusBadge = evaluatedModules[idx] 
-                    ? `<span class="w-2 h-2 rounded-full bg-emerald-400"></span>`
-                    : `<span class="w-2 h-2 rounded-full bg-slate-700"></span>`;
-
-                btn.innerHTML = `
-                    <div class="truncate pr-2">
-                        <span class="block text-[10px] text-slate-500 font-semibold uppercase">Modul ${mod.id}</span>
-                        <span class="truncate">${mod.title}</span>
+            const nav = document.getElementById('nav-container');
+            nav.innerHTML = modulesData.map((m, idx) => `
+                <button onclick="loadModule(${idx})" id="nav-btn-${idx}" class="w-full text-left p-3 rounded-lg text-sm font-medium transition flex items-center justify-between ${idx === currentModuleIndex ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-700/50 hover:text-slate-200'}">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${idx === currentModuleIndex ? 'bg-white text-indigo-600 font-bold' : 'bg-slate-700 text-slate-300'}">${m.id}</span>
+                        <span class="truncate max-w-[170px]">${m.title}</span>
                     </div>
-                    ${statusBadge}
-                `;
-                nav.appendChild(btn);
-            });
+                    <i data-lucide="chevron-right" class="w-4 h-4 opacity-50"></i>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
 
+        function loadModule(index) {
+            currentModuleIndex = index;
+            const data = modulesData[index];
+
+            // Update UI
+            document.getElementById('module-badge').innerText = `${data.id}. Modul`;
+            document.getElementById('module-title').innerText = data.title;
+            document.getElementById('module-theory').innerHTML = data.theory;
+
+            renderNav();
+            renderQuiz();
             updateOverallProgress();
         }
 
-        // Load Active Module Content
-        function loadModule(index) {
-            currentModuleIndex = index;
-            const mod = modulesData[index];
-
-            document.getElementById("module-badge").innerText = mod.badge;
-            document.getElementById("module-title").innerText = mod.title;
-            document.getElementById("summary-content").innerHTML = mod.summary;
-
-            renderQuiz();
-            renderNav();
-            switchTab('summary'); // Default to summary tab on module change
-        }
-
-        // Switch between Summary and Quiz tabs
-        function switchTab(tab) {
-            const summaryView = document.getElementById("summary-view");
-            const quizView = document.getElementById("quiz-view");
-            const summaryBtn = document.getElementById("tab-summary-btn");
-            const quizBtn = document.getElementById("tab-quiz-btn");
-
-            if (tab === 'summary') {
-                summaryView.classList.remove("hidden");
-                quizView.classList.add("hidden");
-
-                summaryBtn.className = "px-4 py-2 rounded-xl font-medium text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-                quizBtn.className = "px-4 py-2 rounded-xl font-medium text-sm transition-all bg-slate-800 text-slate-300 hover:bg-slate-700";
-            } else {
-                summaryView.classList.add("hidden");
-                quizView.classList.remove("hidden");
-
-                quizBtn.className = "px-4 py-2 rounded-xl font-medium text-sm transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-                summaryBtn.className = "px-4 py-2 rounded-xl font-medium text-sm transition-all bg-slate-800 text-slate-300 hover:bg-slate-700";
-            }
-        }
-
-        // Render 10 Questions for the current module
         function renderQuiz() {
-            const form = document.getElementById("quiz-form");
-            form.innerHTML = "";
-            const mod = modulesData[currentModuleIndex];
-            const isEvaluated = evaluatedModules[currentModuleIndex] || false;
-            const answers = userAnswers[currentModuleIndex] || {};
+            const quizContainer = document.getElementById('quiz-form');
+            const data = modulesData[currentModuleIndex];
+            const savedAnswers = userAnswers[data.id] || {};
 
-            mod.questions.forEach((q, qIdx) => {
-                const qCard = document.createElement("div");
-                qCard.className = "glass-card p-5 md:p-6 rounded-2xl space-y-4 border border-slate-800";
-
-                let headerText = `<div class="font-semibold text-white text-base flex gap-2">
-                    <span class="text-blue-400 font-bold">${qIdx + 1}.</span> 
-                    <span>${q.q}</span>
-                </div>`;
-
-                let optionsHtml = `<div class="space-y-2 pt-2">`;
-
-                q.options.forEach((opt, optIdx) => {
-                    const isChecked = answers[qIdx] === optIdx;
-                    let optionStyle = "bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700";
-
-                    if (isEvaluated) {
-                        if (optIdx === q.correct) {
-                            optionStyle = "bg-emerald-950/60 border-emerald-500/80 text-emerald-200 font-medium"; // Correct option highlight
-                        } else if (isChecked && optIdx !== q.correct) {
-                            optionStyle = "bg-rose-950/60 border-rose-500/80 text-rose-200"; // Wrong selected option highlight
-                        }
-                    } else if (isChecked) {
-                        optionStyle = "bg-blue-900/40 border-blue-500 text-blue-200 font-medium";
-                    }
-
-                    optionsHtml += `
-                        <label class="flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${optionStyle}">
-                            <input type="radio" name="q_${qIdx}" value="${optIdx}" ${isChecked ? "checked" : ""} ${isEvaluated ? "disabled" : ""} 
-                                onchange="selectAnswer(${currentModuleIndex}, ${qIdx}, ${optIdx})" 
-                                class="mt-1 text-blue-600 focus:ring-blue-500 bg-slate-900 border-slate-700">
-                            <span class="text-xs md:text-sm leading-relaxed">${opt}</span>
-                        </label>
-                    `;
-                });
-
-                optionsHtml += `</div>`;
-
-                // Explanation Block after evaluation
-                let explanationHtml = "";
-                if (isEvaluated) {
-                    const userSel = answers[qIdx];
-                    const isCorrect = userSel === q.correct;
-
-                    explanationHtml = `
-                        <div class="mt-4 p-4 rounded-xl text-xs md:text-sm leading-relaxed ${isCorrect ? 'bg-emerald-900/20 border border-emerald-500/30 text-emerald-300' : 'bg-rose-900/20 border border-rose-500/30 text-rose-300'}">
-                            <div class="font-bold mb-1 flex items-center gap-2">
-                                ${isCorrect ? '✅ Helyes válasz!' : '❌ Helytelen válasz!'}
-                            </div>
-                            <div>
-                                ${!isCorrect ? `<p class="mb-1"><strong>A helyes válasz:</strong> ${q.options[q.correct]}</p>` : ''}
-                                <p class="text-slate-300 mt-1"><strong>Miért?</strong> ${q.explanation}</p>
-                            </div>
+            quizContainer.innerHTML = data.quiz.map((q, qIdx) => {
+                const selected = savedAnswers[qIdx];
+                return `
+                    <div id="q-box-${qIdx}" class="p-4 rounded-lg bg-slate-900/50 border border-slate-700/60">
+                        <p class="font-medium text-slate-200 text-sm md:text-base mb-3">
+                            <span class="text-indigo-400 mr-1">${qIdx + 1}.</span> ${q.q}
+                        </p>
+                        <div class="space-y-2">
+                            ${q.a.map((opt, optIdx) => `
+                                <label class="flex items-center p-2.5 rounded-md hover:bg-slate-700/40 cursor-pointer text-xs md:text-sm text-slate-300 transition border border-transparent has-[:checked]:border-indigo-500/50 has-[:checked]:bg-indigo-500/10">
+                                    <input type="radio" name="q-${qIdx}" value="${optIdx}" ${selected === optIdx ? 'checked' : ''} onchange="selectAnswer(${qIdx},${optIdx})" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 focus:ring-indigo-500">
+                                    <span class="ml-3">${opt}</span>
+                                </label>
+                            `).join('')}
                         </div>
-                    `;
-                }
+                        <div id="explanation-${qIdx}" class="hidden mt-3 p-3 rounded-md text-xs md:text-sm"></div>
+                    </div>
+                `;
+            }).join('');
 
-                qCard.innerHTML = headerText + optionsHtml + explanationHtml;
-                form.appendChild(qCard);
+            updateScoreBadge();
+            lucide.createIcons();
+        }
+
+        function selectAnswer(qIdx, optIdx) {
+            const modId = modulesData[currentModuleIndex].id;
+            if (!userAnswers[modId]) userAnswers[modId] = {};
+            userAnswers[modId][qIdx] = optIdx;
+
+            updateScoreBadge();
+            updateOverallProgress();
+        }
+
+        function updateScoreBadge() {
+            const modId = modulesData[currentModuleIndex].id;
+            const answeredCount = userAnswers[modId] ? Object.keys(userAnswers[modId]).length : 0;
+            document.getElementById('quiz-score').innerText = `Kitöltve: ${answeredCount} / 10`;
+        }
+
+        function checkAnswers() {
+            const data = modulesData[currentModuleIndex];
+            const modAnswers = userAnswers[data.id] || {};
+
+            data.quiz.forEach((q, qIdx) => {
+                const qBox = document.getElementById(`q-box-${qIdx}`);
+                const expBox = document.getElementById(`explanation-${qIdx}`);
+                const selectedOpt = modAnswers[qIdx];
+
+                expBox.classList.remove('hidden', 'bg-emerald-950/40', 'text-emerald-300', 'border-emerald-800', 'bg-rose-950/40', 'text-rose-300', 'border-rose-800');
+                
+                if (selectedOpt === undefined) {
+                    expBox.classList.add('bg-slate-800', 'text-slate-400', 'border', 'border-slate-700');
+                    expBox.innerHTML = `<strong>Nem válaszoltál!</strong> A helyes válasz: <em>${q.a[q.c]}</em>.<br>${q.e}`;
+                } else if (selectedOpt === q.c) {
+                    expBox.classList.add('bg-emerald-950/40', 'text-emerald-300', 'border', 'border-emerald-800');
+                    expBox.innerHTML = `<div class="flex items-center gap-1 font-semibold mb-1"><i data-lucide="check" class="w-4 h-4"></i> Helyes válasz!</div>${q.e}`;
+                } else {
+                    expBox.classList.add('bg-rose-950/40', 'text-rose-300', 'border', 'border-rose-800');
+                    expBox.innerHTML = `<div class="flex items-center gap-1 font-semibold mb-1"><i data-lucide="x" class="w-4 h-4"></i> Helytelen válasz!</div> A helyes válasz: <strong>${q.a[q.c]}</strong>.<br>${q.e}`;
+                }
+            });
+            lucide.createIcons();
+        }
+
+        function resetQuiz() {
+            const modId = modulesData[currentModuleIndex].id;
+            if (userAnswers[modId]) {
+                delete userAnswers[modId];
+            }
+            renderQuiz();
+            updateOverallProgress();
+        }
+
+        function updateOverallProgress() {
+            let totalQuestions = 0;
+            let answeredQuestions = 0;
+
+            modulesData.forEach(m => {
+                totalQuestions += m.quiz.length;
+                if (userAnswers[m.id]) {
+                    answeredQuestions += Object.keys(userAnswers[m.id]).length;
+                }
             });
 
-            // Update Score Badge if evaluated
-            const scoreBadge = document.getElementById("quiz-score-badge");
-            if (isEvaluated) {
-                let score = 0;
-                mod.questions.forEach((q, qIdx) => {
-                    if (answers[qIdx] === q.correct) score++;
-                });
-                document.getElementById("score-val").innerText = score;
-                scoreBadge.classList.remove("hidden");
-            } else {
-                scoreBadge.classList.add("hidden");
-            }
+            const percentage = Math.round((answeredQuestions / totalQuestions) * 100);
+            document.getElementById('overall-progress-text').innerText = `${percentage}%`;
+            document.getElementById('overall-progress-bar').style.width = `${percentage}%`;
         }
 
-        // Store User Selected Option
-        function selectAnswer(modIdx, qIdx, optIdx) {
-            if (!userAnswers[modIdx]) userAnswers[modIdx] = {};
-            userAnswers[modIdx][qIdx] = optIdx;
-        }
-
-        // Evaluate Quiz for current module
-        function evaluateQuiz() {
-            const mod = modulesData[currentModuleIndex];
-            const answers = userAnswers[currentModuleIndex] || {};
-
-            // Check if all questions are answered
-            if (Object.keys(answers).length < mod.questions.length) {
-                const unansweredCount = mod.questions.length - Object.keys(answers).length;
-                if(!confirm(`Még ${unansweredCount} kérdésre nem válaszoltál! Biztosan ellenőrizni akarod most?`)) {
-                    return;
-                }
-            }
-
-            evaluatedModules[currentModuleIndex] = true;
-            renderQuiz();
-            renderNav();
-        }
-
-        // Reset Quiz for current module
-        function resetQuiz() {
-            delete userAnswers[currentModuleIndex];
-            delete evaluatedModules[currentModuleIndex];
-            renderQuiz();
-            renderNav();
-        }
-
-        // Overall progress calculation across 9 modules
-        function updateOverallProgress() {
-            const totalModules = modulesData.length;
-            const completedModules = Object.keys(evaluatedModules).length;
-            const percent = Math.round((completedModules / totalModules) * 100);
-
-            document.getElementById("overall-progress-text").innerText = `${percent}%`;
-            document.getElementById("overall-progress-bar").style.width = `${percent}%`;
-        }
+        // Initialize on page load
+        window.onload = initApp;
     </script>
 </body>
 </html>
