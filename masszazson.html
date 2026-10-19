@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MasszázsON – Mobil masszázs Jászberény</title>
+<meta name="description" content="Mobil masszázs Jászberényben és 20 km-es körzetében. Házhoz megyek, mindent viszek. Ingyenes kiszállás, OTP SZÉP-kártya elfogadóhely.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#faf6ef;--surface:#fff;--soft:#f1e8d9;--ink:#2a211a;--muted:#6f6254;--brand:#7a4e2a;--gold:#b98a4e;--line:#e6dac6;--on-brand:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1713;--surface:#262019;--soft:#322a20;--ink:#f3eadd;--muted:#b5a592;--brand:#d6a26a;--gold:#d6a26a;--line:#3d3328;--on-brand:#1c1713;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1713;--surface:#262019;--soft:#322a20;--ink:#f3eadd;--muted:#b5a592;--brand:#d6a26a;--gold:#d6a26a;--line:#3d3328;--on-brand:#1c1713;color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Figtree,system-ui,sans-serif}
+h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.logo{font:700 26px "Cormorant Garamond",Georgia,serif;text-decoration:none;color:var(--brand)}
+nav{display:flex;gap:18px;font-size:15px}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--brand)}
+@media(max-width:640px){nav{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;background:var(--brand);color:var(--on-brand);font-weight:600;text-decoration:none;border:2px solid var(--brand)}
+.btn.alt{background:transparent;color:var(--brand)}
+.btn.small{padding:8px 16px;font-size:15px}
+.hero{padding:56px 0 48px;text-align:center}
+.hero .place{color:var(--muted);margin:0 0 14px}
+.hero h1{font-size:clamp(44px,10vw,84px);font-weight:700;color:var(--brand)}
+.hero p.lead{font-size:clamp(20px,3.5vw,26px);font-family:"Cormorant Garamond",Georgia,serif;margin:16px auto 28px;max-width:30ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+.badge{background:var(--soft);border-radius:999px;padding:6px 14px;font-size:15px}
+section{padding:48px 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(34px,6vw,48px);color:var(--brand);margin-bottom:8px}
+.sub{color:var(--muted);margin:0 0 24px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tabs button{font:inherit;font-weight:600;padding:10px 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.rows{display:grid;gap:14px}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:6px 18px;align-items:center}
+.dur{font:700 36px "Cormorant Garamond",Georgia,serif;color:var(--gold);min-width:3.2ch}
+.row h3{font-size:25px}
+.row p{margin:0;color:var(--muted);font-size:15px}
+.price{text-align:right}
+.price .now{font-weight:600;font-size:22px;white-space:nowrap}
+.price .was{display:block;color:var(--muted);text-decoration:line-through;font-size:14px}
+.price .save{display:inline-block;background:var(--soft);color:var(--brand);border-radius:8px;padding:1px 8px;font-size:14px;font-weight:600}
+.price .intro{display:block;color:var(--brand);font-size:14px}
+@media(max-width:560px){.row{grid-template-columns:auto 1fr}.price{grid-column:1/-1;text-align:left;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}}
+.note{color:var(--muted);font-size:15px;margin-top:16px}
+.gift{background:var(--soft);border-radius:22px;padding:32px 24px;text-align:center}
+.gift .big{font:700 clamp(44px,10vw,72px) "Cormorant Garamond",Georgia,serif;color:var(--brand);line-height:1}
+.gift p{margin:8px 0}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.card h3{font-size:24px;margin-bottom:6px}
+.card p{margin:0;color:var(--muted)}
+.contact{text-align:center}
+.phone{display:inline-block;font:700 clamp(38px,9vw,64px) "Cormorant Garamond",Georgia,serif;color:var(--brand);text-decoration:none;margin:8px 0 18px}
+footer{padding:28px 0 40px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:14px}
+.callbar{display:none}
+@media(max-width:640px){
+.callbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.callbar .btn{flex:1;padding:12px 10px}
+footer{padding-bottom:90px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<a class="logo" href="#top">MasszázsON</a>
+<nav aria-label="Főmenü"><a href="#alap">Kezelések</a><a href="#berlet">Bérletek</a><a href="#akcio">Nyitó akció</a><a href="#kapcsolat">Kapcsolat</a></nav>
+<a class="btn small" href="tel:+36305557579">Hívás</a>
+</div></header>
+
+<main id="top">
+<div class="wrap hero">
+<p class="place">Mobil masszázs Jászberényben</p>
+<h1>MasszázsON</h1>
+<p class="lead">Házhoz megyek, mindent viszek.</p>
+<div class="cta">
+<a class="btn" href="tel:+36305557579">Foglalás telefonon</a>
+<a class="btn alt" href="viber://chat?number=%2B36305557579">Viber üzenet</a>
+</div>
+<div class="badges">
+<span class="badge">Ingyenes kiszállás 20 km-en belül</span>
+<span class="badge">OTP SZÉP-kártya elfogadóhely</span>
+<span class="badge">Kíméletes átmozgatás</span>
+</div>
+</div>
+
+<section id="alap"><div class="wrap">
+<h2>Alapkezelések</h2>
+<p class="sub">Új vendégként az első alkalomra bevezető árat kapsz.</p>
+<div class="rows" id="basic"></div>
+<p class="note">A bevezető ár csak új vendégek első alkalmára érvényes, bérlettel nem vonható össze. Kíméletes átmozgatás, nem orvosi kezelés.</p>
+</div></section>
+
+<section id="berlet"><div class="wrap">
+<h2>Bérletek</h2>
+<p class="sub">Minden bérlet a megrendeléstől számított 2 hónapig érvényes. A megtakarítás a normál, egyalkalmas árakhoz képest értendő.</p>
+<div class="tabs" role="tablist" aria-label="Bérlet típusa" id="tabs"></div>
+<div class="rows" id="packs" role="tabpanel"></div>
+</div></section>
+
+<section id="akcio"><div class="wrap">
+<div class="gift">
+<h2>Nyitó akció</h2>
+<p>Az első 10 bérletvásárlónak</p>
+<div class="big">+1 ajándék</div>
+<p><strong>30 perces hátmasszázs</strong></p>
+<p>2, 3 vagy 4 alkalmas bérlethez is.</p>
+</div>
+</div></section>
+
+<section id="info"><div class="wrap">
+<h2>Jó tudni</h2>
+<div class="grid" style="margin-top:20px">
+<div class="card"><h3>Ingyenes kiszállás</h3><p>Jászberényben és 20 km-es körzetében nem számolok fel kiszállási díjat.</p></div>
+<div class="card"><h3>Házhoz megyek</h3><p>Mindent viszek magammal, neked csak helyet kell biztosítanod.</p></div>
+<div class="card"><h3>SZÉP-kártya</h3><p>Fizethetsz OTP SZÉP-kártyával is.</p></div>
+</div>
+</div></section>
+
+<section id="kapcsolat"><div class="wrap contact">
+<h2>Foglalás</h2>
+<p class="sub">Foglalj üzenetben vagy telefonon.</p>
+<a class="phone" href="tel:+36305557579">06-30/555-7579</a>
+<div class="cta">
+<a class="btn" href="tel:+36305557579">Hívás</a>
+<a class="btn alt" href="viber://chat?number=%2B36305557579">Viber</a>
+</div>
+<p class="note">Üzenetben is elérsz: Messenger vagy Viber.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+MasszázsON · Mobil masszázs · Jászberény<br>
+Kíméletes átmozgatás, nem orvosi kezelés.
+</div></footer>
+
+<div class="callbar">
+<a class="btn" href="tel:+36305557579">Hívás</a>
+<a class="btn alt" href="viber://chat?number=%2B36305557579">Viber</a>
+</div>
+
+<script>
+var fmt=function(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Ft'};
+var svc=[
+{d:'30 perc',n:'Hátmasszázs',t:'Célzott hát- és válllazítás'},
+{d:'50 perc',n:'Egész testes frissítő',t:'Hát, vállak, karok és lábak masszázsa'},
+{d:'90 perc',n:'Komplex frissítő masszázs',t:'Izomlazító masszázs és kíméletes átmozgatás'}];
+var basic=[[5500,5900],[8900,9500],[15000,16500]];
+var packs={
+'2 alkalmas':[[11800,10800],[19000,17000],[33000,29000]],
+'3 alkalmas':[[17700,14700],[28500,24000],[49500,42000]],
+'4 alkalmas':[[23600,18000],[38000,30000],[66000,54000]]};
+function row(s,p){
+return '<div class="row"><div class="dur">'+s.d.split(' ')[0]+'′</div><div><h3>'+s.n+'</h3><p>'+s.t+'</p></div><div class="price">'+p+'</div></div>';}
+document.getElementById('basic').innerHTML=svc.map(function(s,i){
+return row(s,'<span class="now">'+fmt(basic[i][1])+'</span><span class="intro">Bevezető, 1. alkalom: '+fmt(basic[i][0])+'</span>');}).join('');
+var tabs=document.getElementById('tabs'),panel=document.getElementById('packs'),keys=Object.keys(packs);
+function show(k){
+Array.prototype.forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.textContent===k)});
+panel.innerHTML=svc.map(function(s,i){var p=packs[k][i];
+return row(s,'<span class="now">'+fmt(p[1])+'</span><span class="was">'+fmt(p[0])+'</span><span class="save">−'+fmt(p[0]-p[1])+'</span>');}).join('');}
+keys.forEach(function(k){var b=document.createElement('button');b.type='button';b.setAttribute('role','tab');b.textContent=k;b.onclick=function(){show(k)};tabs.appendChild(b)});
+show(keys[0]);
+</script>
+</body>
+</html>
