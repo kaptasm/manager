@@ -28,11 +28,13 @@ nav a:hover{color:var(--brand)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;background:var(--brand);color:var(--on-brand);font-weight:600;text-decoration:none;border:2px solid var(--brand)}
 .btn.alt{background:transparent;color:var(--brand)}
 .btn.small{padding:8px 16px;font-size:15px}
+.btn svg{width:20px;height:20px;fill:currentColor;flex:none}
 .hero{padding:56px 0 48px;text-align:center}
 .hero .place{color:var(--muted);margin:0 0 14px}
 .hero h1{font-size:clamp(44px,10vw,84px);font-weight:700;color:var(--brand)}
 .hero p.lead{font-size:clamp(20px,3.5vw,26px);font-family:"Cormorant Garamond",Georgia,serif;margin:16px auto 28px;max-width:30ch}
 .cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.cta.social{margin-top:14px}
 .badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
 .badge{background:var(--soft);border-radius:999px;padding:6px 14px;font-size:15px}
 section{padding:48px 0;border-top:1px solid var(--line)}
@@ -86,6 +88,11 @@ footer{padding-bottom:90px}}
 <a class="btn" href="tel:+36305557579">Foglalás telefonon</a>
 <a class="btn alt" href="viber://chat?number=%2B36305557579">Viber üzenet</a>
 </div>
+<div class="cta social">
+<a class="btn alt" href="https://www.facebook.com/share/19mU1RdCTu/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>Facebook</a>
+<a class="btn alt" href="https://www.instagram.com/masszazson?exln=ZDVqMjB4YmxzcmY5" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>Instagram</a>
+<a class="btn alt" href="mailto:masszazs.one@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm10 7.2L3.6 7v10.4h16.8V7L12 12.2zM4.9 7L12 11.3 19.1 7H4.9z"/></svg>E-mail</a>
+</div>
 <div class="badges">
 <span class="badge">Ingyenes kiszállás 20 km-en belül</span>
 <span class="badge">OTP SZÉP-kártya elfogadóhely</span>
@@ -134,7 +141,12 @@ footer{padding-bottom:90px}}
 <a class="btn" href="tel:+36305557579">Hívás</a>
 <a class="btn alt" href="viber://chat?number=%2B36305557579">Viber</a>
 </div>
-<p class="note">Üzenetben is elérsz: Messenger vagy Viber.</p>
+<div class="cta social">
+<a class="btn alt" href="https://www.facebook.com/share/19mU1RdCTu/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>Facebook</a>
+<a class="btn alt" href="https://www.instagram.com/masszazson?exln=ZDVqMjB4YmxzcmY5" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>Instagram</a>
+<a class="btn alt" href="mailto:masszazs.one@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm10 7.2L3.6 7v10.4h16.8V7L12 12.2zM4.9 7L12 11.3 19.1 7H4.9z"/></svg>E-mail</a>
+</div>
+<p class="note">Üzenetben is elérsz: Messenger, Viber vagy e-mail (masszazs.one@gmail.com).</p>
 </div></section>
 </main>
 
