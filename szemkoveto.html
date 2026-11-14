@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eye Tracking Selector</title>
+
+<script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #101827;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+h1 { margin-bottom: 10px; }
+
+#status {
+    color: #aabbd0;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    gap: 35px;
+    width: 90%;
+    max-width: 900px;
+}
+
+.choice {
+    flex: 1;
+    height: 300px;
+    border: 3px solid #34445c;
+    border-radius: 25px;
+    background: #1c2b40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: .15s;
+}
+
+.choice .emoji { font-size: 100px; }
+.choice h2 { font-size: 30px; }
+
+.choice.active {
+    border-color: #00e6bd;
+    background: #164b4a;
+    box-shadow: 0 0 30px #00e6bd55;
+}
+
+.choice.selected {
+    border-color: #facc15;
+    background: #574719;
+}
+
+#start {
+    margin-top: 35px;
+    padding: 16px 30px;
+    border: none;
+    border-radius: 12px;
+    background: #00e6bd;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#reset {
+    margin-top: 12px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#progress {
+    width: 260px;
+    height: 8px;
+    background: #34445c;
+    border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#bar {
+    height: 100%;
+    width: 0%;
+    background: #00e6bd;
+}
+
+#cursor {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    border: 3px solid white;
+    background: #00e6bd99;
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0 0 15px #00e6bd;
+}
+
+#cursor::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    background: white;
+    border-radius: 50%;
+}
+
+@media(max-width:600px) {
+    .container { gap: 12px; }
+    .choice { height: 220px; }
+    .choice .emoji { font-size: 65px; }
+    .choice h2 { font-size: 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<h1>👁 Eye Tracker</h1>
+<div id="status">Indítsd el a kamerát!</div>
+
+<div class="container">
+
+    <div class="choice" id="left">
+        <div class="emoji">🐱</div>
+        <h2>MACSKA</h2>
+    </div>
+
+    <div class="choice" id="right">
+        <div class="emoji">🐶</div>
+        <h2>KUTYA</h2>
+    </div>
+
+</div>
+
+<div id="progress"><div id="bar"></div></div>
+
+<button id="start">Szemkövetés indítása</button>
+<button id="reset" onclick="resetSelection()">Új választás</button>
+
+<div id="cursor"></div>
+
+<script>
+const left = document.getElementById("left");
+const right = document.getElementById("right");
+const cursor = document.getElementById("cursor");
+const statusText = document.getElementById("status");
+const bar = document.getElementById("bar");
+
+let active = null;
+let startTime = 0;
+let selected = false;
+
+const DWELL_TIME = 1500;
+
+async function startTracking() {
+    const button = document.getElementById("start");
+    button.disabled = true;
+
+    try {
+        if (!window.webgazer) {
+            throw new Error("A WebGazer nem töltődött be.");
+        }
+
+        webgazer.saveDataAcrossSessions(false);
+        webgazer.showVideo(true);
+        webgazer.showFaceOverlay(true);
+        webgazer.showFaceFeedbackBox(true);
+        webgazer.showPredictionPoints(false);
+
+        webgazer.setGazeListener((data, timestamp) => {
+            if (!data) return;
+
+            // Valós idejű tekintetpozíció
+            const x = data.x;
+            const y = data.y;
+
+            cursor.style.display = "block";
+            cursor.style.left = x + "px";
+            cursor.style.top = y + "px";
+
+            if (selected) return;
+
+            // Megnézzük, melyik ikon felett van a becsült tekintet
+            let target = null;
+
+            const l = left.getBoundingClientRect();
+            const r = right.getBoundingClientRect();
+
+            if (x >= l.left && x <= l.right &&
+                y >= l.top && y <= l.bottom) {
+                target = "left";
+            }
+
+            if (x >= r.left && x <= r.right &&
+                y >= r.top && y <= r.bottom) {
+                target = "right";
+            }
+
+            if (!target) {
+                active = null;
+                startTime = 0;
+                left.classList.remove("active");
+                right.classList.remove("active");
+                bar.style.width = "0%";
+                statusText.textContent = "Nézz valamelyik ikonra!";
+                return;
+            }
+
+            if (active !== target) {
+                active = target;
+                startTime = Date.now();
+            }
+
+            left.classList.toggle("active", target === "left");
+            right.classList.toggle("active", target === "right");
+
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / DWELL_TIME, 1);
+
+            bar.style.width = (progress * 100) + "%";
+
+            statusText.textContent =
+                target === "left"
+                ? "🐱 Macskára nézel..."
+                : "🐶 Kutyára nézel...";
+
+            if (elapsed >= DWELL_TIME) {
+                selectChoice(target);
+            }
+        });
+
+        await webgazer.begin();
+
+        statusText.textContent =
+            "Követés aktív! Nézz az egyik ikonra.";
+
+    } catch (error) {
+        statusText.textContent = "Hiba: " + error.message;
+        button.disabled = false;
+    }
+}
+
+function selectChoice(target) {
+    selected = true;
+
+    left.classList.remove("active");
+    right.classList.remove("active");
+
+    const element = target === "left" ? left : right;
+    element.classList.add("selected");
+
+    statusText.textContent =
+        "✅ Kiválasztottad: " +
+        (target === "left" ? "MACSKA 🐱" : "KUTYA 🐶");
+}
+
+function resetSelection() {
+    selected = false;
+    active = null;
+    startTime = 0;
+
+    left.classList.remove("active", "selected");
+    right.classList.remove("active", "selected");
+
+    bar.style.width = "0%";
+    statusText.textContent = "Nézz valamelyik ikonra!";
+}
+
+document.getElementById("start")
+    .addEventListener("click", startTracking);
+
+</script>
+</body>
+</html>
