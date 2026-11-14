@@ -3,13 +3,15 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eye Tracking Selector</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eye Tracker - Gaze Selector</title>
 
 <script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
 
 <style>
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -20,28 +22,32 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    padding: 35px 15px;
 }
 
-h1 { margin-bottom: 10px; }
+h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    margin: 10px 0;
+}
 
 #status {
     color: #aabbd0;
-    margin-bottom: 30px;
     text-align: center;
+    min-height: 28px;
+    margin: 12px 0 25px;
 }
 
 .container {
     display: flex;
-    gap: 35px;
-    width: 90%;
-    max-width: 900px;
+    gap: 25px;
+    width: 100%;
+    max-width: 1000px;
 }
 
 .choice {
     flex: 1;
-    height: 300px;
+    min-width: 0;
+    min-height: 320px;
     border: 3px solid #34445c;
     border-radius: 25px;
     background: #1c2b40;
@@ -49,16 +55,23 @@ h1 { margin-bottom: 10px; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: .15s;
+    transition: background .15s, border-color .15s;
+    position: relative;
+    overflow: hidden;
 }
 
-.choice .emoji { font-size: 100px; }
-.choice h2 { font-size: 30px; }
+.emoji {
+    font-size: clamp(75px, 12vw, 120px);
+}
+
+.choice h2 {
+    font-size: clamp(22px, 4vw, 35px);
+}
 
 .choice.active {
     border-color: #00e6bd;
     background: #164b4a;
-    box-shadow: 0 0 30px #00e6bd55;
+    box-shadow: 0 0 30px #00e6bd44;
 }
 
 .choice.selected {
@@ -66,67 +79,143 @@ h1 { margin-bottom: 10px; }
     background: #574719;
 }
 
-#start {
-    margin-top: 35px;
-    padding: 16px 30px;
+.progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 8px;
+    background: #00e6bd;
+}
+
+button {
     border: none;
     border-radius: 12px;
-    background: #00e6bd;
-    font-size: 17px;
+    padding: 15px 25px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
 }
 
-#reset {
-    margin-top: 12px;
-    padding: 12px 22px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-#progress {
-    width: 260px;
-    height: 8px;
-    background: #34445c;
-    border-radius: 10px;
-    margin-top: 20px;
-    overflow: hidden;
-}
-
-#bar {
-    height: 100%;
-    width: 0%;
+#start {
     background: #00e6bd;
+    color: #101827;
+    margin-top: 30px;
+}
+
+#reset {
+    background: #34445c;
+    color: white;
+    margin-top: 12px;
+}
+
+button:disabled {
+    opacity: .5;
 }
 
 #cursor {
     position: fixed;
-    width: 24px;
-    height: 24px;
-    border: 3px solid white;
-    background: #00e6bd99;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
-    transform: translate(-50%,-50%);
+    border: 3px solid white;
+    background: #00e6bd;
+    transform: translate(-50%, -50%);
     pointer-events: none;
-    z-index: 9999;
+    z-index: 99999;
     display: none;
-    box-shadow: 0 0 15px #00e6bd;
+    box-shadow: 0 0 20px #00e6bd;
 }
 
 #cursor::after {
     content: "";
     position: absolute;
-    inset: 6px;
+    width: 7px;
+    height: 7px;
     background: white;
     border-radius: 50%;
+    top: 6px;
+    left: 6px;
 }
 
-@media(max-width:600px) {
-    .container { gap: 12px; }
-    .choice { height: 220px; }
-    .choice .emoji { font-size: 65px; }
-    .choice h2 { font-size: 20px; }
+#calibration {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: #101827;
+    display: none;
+}
+
+#calibration h2 {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#calibration p {
+    text-align: center;
+    color: #aabbd0;
+    padding: 0 15px;
+}
+
+.cal-point {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #00e6bd;
+    border: 4px solid white;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    box-shadow: 0 0 15px #00e6bd;
+}
+
+.cal-point.done {
+    background: #64748b;
+    box-shadow: none;
+}
+
+#calProgress {
+    text-align: center;
+    color: white;
+    margin-top: 15px;
+}
+
+#message {
+    margin-top: 15px;
+    color: #fca5a5;
+    text-align: center;
+    max-width: 600px;
+}
+
+/* WebGazer saját kamerafelülete teljesen elrejtve */
+#webgazerVideoContainer,
+#webgazerVideoFeed,
+#webgazerFaceOverlay,
+#webgazerFaceFeedbackBox,
+#webgazerVideoCanvas {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+@media(max-width: 650px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .container {
+        gap: 12px;
+    }
+
+    .choice {
+        min-height: 230px;
+        border-radius: 18px;
+    }
+
+    .choice h2 {
+        font-size: 19px;
+    }
 }
 </style>
 </head>
@@ -134,159 +223,322 @@ h1 { margin-bottom: 10px; }
 <body>
 
 <h1>👁 Eye Tracker</h1>
-<div id="status">Indítsd el a kamerát!</div>
+
+<div id="status">
+    Indítsd el a szemkövetést!
+</div>
 
 <div class="container">
 
     <div class="choice" id="left">
         <div class="emoji">🐱</div>
         <h2>MACSKA</h2>
+        <div class="progress" id="leftProgress"></div>
     </div>
 
     <div class="choice" id="right">
         <div class="emoji">🐶</div>
         <h2>KUTYA</h2>
+        <div class="progress" id="rightProgress"></div>
     </div>
 
 </div>
 
-<div id="progress"><div id="bar"></div></div>
-
 <button id="start">Szemkövetés indítása</button>
-<button id="reset" onclick="resetSelection()">Új választás</button>
+<button id="reset">Újrakezdés</button>
+
+<div id="message"></div>
 
 <div id="cursor"></div>
+
+<div id="calibration">
+
+    <h2>🎯 Kalibráció</h2>
+
+    <p>
+        Nézz a zöld pontokra, majd kattints rájuk.
+        Haladj végig mind a 9 ponton!
+    </p>
+
+    <div id="calProgress">0 / 9</div>
+
+    <div class="cal-point" style="left:10%;top:20%"></div>
+    <div class="cal-point" style="left:50%;top:20%"></div>
+    <div class="cal-point" style="left:90%;top:20%"></div>
+
+    <div class="cal-point" style="left:10%;top:50%"></div>
+    <div class="cal-point" style="left:50%;top:50%"></div>
+    <div class="cal-point" style="left:90%;top:50%"></div>
+
+    <div class="cal-point" style="left:10%;top:80%"></div>
+    <div class="cal-point" style="left:50%;top:80%"></div>
+    <div class="cal-point" style="left:90%;top:80%"></div>
+
+</div>
 
 <script>
 const left = document.getElementById("left");
 const right = document.getElementById("right");
+
 const cursor = document.getElementById("cursor");
 const statusText = document.getElementById("status");
-const bar = document.getElementById("bar");
+const message = document.getElementById("message");
 
-let active = null;
-let startTime = 0;
-let selected = false;
+const calibration = document.getElementById("calibration");
+const calPoints = document.querySelectorAll(".cal-point");
 
 const DWELL_TIME = 1500;
 
-async function startTracking() {
-    const button = document.getElementById("start");
-    button.disabled = true;
+let running = false;
+let selected = false;
+let active = null;
+let startTime = 0;
+let calibrationCount = 0;
+let lastGazeTime = 0;
 
-    try {
-        if (!window.webgazer) {
-            throw new Error("A WebGazer nem töltődött be.");
-        }
+function updateProgress(target, value) {
+    document.getElementById("leftProgress").style.width =
+        target === "left" ? value + "%" : "0%";
 
-        webgazer.saveDataAcrossSessions(false);
-        webgazer.showVideo(true);
-        webgazer.showFaceOverlay(true);
-        webgazer.showFaceFeedbackBox(true);
-        webgazer.showPredictionPoints(false);
+    document.getElementById("rightProgress").style.width =
+        target === "right" ? value + "%" : "0%";
+}
 
-        webgazer.setGazeListener((data, timestamp) => {
-            if (!data) return;
+function resetActive() {
+    active = null;
+    startTime = 0;
 
-            // Valós idejű tekintetpozíció
-            const x = data.x;
-            const y = data.y;
+    left.classList.remove("active");
+    right.classList.remove("active");
 
-            cursor.style.display = "block";
-            cursor.style.left = x + "px";
-            cursor.style.top = y + "px";
-
-            if (selected) return;
-
-            // Megnézzük, melyik ikon felett van a becsült tekintet
-            let target = null;
-
-            const l = left.getBoundingClientRect();
-            const r = right.getBoundingClientRect();
-
-            if (x >= l.left && x <= l.right &&
-                y >= l.top && y <= l.bottom) {
-                target = "left";
-            }
-
-            if (x >= r.left && x <= r.right &&
-                y >= r.top && y <= r.bottom) {
-                target = "right";
-            }
-
-            if (!target) {
-                active = null;
-                startTime = 0;
-                left.classList.remove("active");
-                right.classList.remove("active");
-                bar.style.width = "0%";
-                statusText.textContent = "Nézz valamelyik ikonra!";
-                return;
-            }
-
-            if (active !== target) {
-                active = target;
-                startTime = Date.now();
-            }
-
-            left.classList.toggle("active", target === "left");
-            right.classList.toggle("active", target === "right");
-
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / DWELL_TIME, 1);
-
-            bar.style.width = (progress * 100) + "%";
-
-            statusText.textContent =
-                target === "left"
-                ? "🐱 Macskára nézel..."
-                : "🐶 Kutyára nézel...";
-
-            if (elapsed >= DWELL_TIME) {
-                selectChoice(target);
-            }
-        });
-
-        await webgazer.begin();
-
-        statusText.textContent =
-            "Követés aktív! Nézz az egyik ikonra.";
-
-    } catch (error) {
-        statusText.textContent = "Hiba: " + error.message;
-        button.disabled = false;
-    }
+    updateProgress(null, 0);
 }
 
 function selectChoice(target) {
     selected = true;
 
-    left.classList.remove("active");
-    right.classList.remove("active");
+    resetActive();
 
     const element = target === "left" ? left : right;
+
     element.classList.add("selected");
 
     statusText.textContent =
-        "✅ Kiválasztottad: " +
+        "✅ Kiválasztva: " +
         (target === "left" ? "MACSKA 🐱" : "KUTYA 🐶");
 }
 
-function resetSelection() {
-    selected = false;
-    active = null;
-    startTime = 0;
+function gazeListener(data) {
+    if (!running || !data) return;
 
-    left.classList.remove("active", "selected");
-    right.classList.remove("active", "selected");
+    lastGazeTime = Date.now();
 
-    bar.style.width = "0%";
-    statusText.textContent = "Nézz valamelyik ikonra!";
+    const x = data.x;
+    const y = data.y;
+
+    // Élő tekintetjelző
+    cursor.style.display = "block";
+    cursor.style.left = x + "px";
+    cursor.style.top = y + "px";
+
+    if (selected || calibration.style.display === "block") {
+        return;
+    }
+
+    // Ikonok koordinátái
+    const leftRect = left.getBoundingClientRect();
+    const rightRect = right.getBoundingClientRect();
+
+    let target = null;
+
+    if (
+        x >= leftRect.left &&
+        x <= leftRect.right &&
+        y >= leftRect.top &&
+        y <= leftRect.bottom
+    ) {
+        target = "left";
+    }
+
+    if (
+        x >= rightRect.left &&
+        x <= rightRect.right &&
+        y >= rightRect.top &&
+        y <= rightRect.bottom
+    ) {
+        target = "right";
+    }
+
+    if (!target) {
+        resetActive();
+        statusText.textContent = "Nézz valamelyik ikonra!";
+        return;
+    }
+
+    if (active !== target) {
+        active = target;
+        startTime = Date.now();
+    }
+
+    left.classList.toggle("active", target === "left");
+    right.classList.toggle("active", target === "right");
+
+    const elapsed = Date.now() - startTime;
+
+    const progress = Math.min(
+        elapsed / DWELL_TIME,
+        1
+    );
+
+    updateProgress(target, progress * 100);
+
+    statusText.textContent =
+        "Tekintettartás: " +
+        (DWELL_TIME - elapsed > 0
+            ? ((DWELL_TIME - elapsed) / 1000).toFixed(1) + " mp"
+            : "kiválasztás...");
+
+    if (elapsed >= DWELL_TIME) {
+        selectChoice(target);
+    }
 }
 
+async function startTracking() {
+
+    const button = document.getElementById("start");
+
+    button.disabled = true;
+    message.textContent = "";
+    statusText.textContent = "Kamera indítása...";
+
+    try {
+
+        if (!window.webgazer) {
+            throw new Error(
+                "A WebGazer nem töltődött be. Ellenőrizd az internetkapcsolatot!"
+            );
+        }
+
+        // Előnézeti ablakok kikapcsolása
+        webgazer.showVideo(false);
+        webgazer.showFaceOverlay(false);
+        webgazer.showFaceFeedbackBox(false);
+        webgazer.showPredictionPoints(false);
+
+        webgazer.saveDataAcrossSessions(false);
+
+        webgazer.setGazeListener(gazeListener);
+
+        await webgazer.begin();
+
+        running = true;
+
+        statusText.textContent =
+            "Kamera aktív. Következik a kalibráció!";
+
+        calibration.style.display = "block";
+
+    } catch (error) {
+
+        button.disabled = false;
+
+        message.textContent =
+            "Hiba: " + error.message +
+            " HTTPS vagy localhost szükséges.";
+
+        statusText.textContent =
+            "Nem sikerült elindítani a szemkövetést.";
+
+    }
+}
+
+// Kalibrációs pontok
+calPoints.forEach((point) => {
+
+    point.addEventListener("click", (event) => {
+
+        if (!running) return;
+
+        // A kattintási koordináta tanítóadatként rögzítése
+        webgazer.recordScreenPosition(
+            event.clientX,
+            event.clientY,
+            "click"
+        );
+
+        if (!point.classList.contains("done")) {
+
+            point.classList.add("done");
+
+            calibrationCount++;
+
+            document.getElementById("calProgress")
+                .textContent = calibrationCount + " / 9";
+        }
+
+        if (calibrationCount >= 9) {
+
+            calibration.style.display = "none";
+
+            statusText.textContent =
+                "Szemkövetés aktív! Nézz az ikonokra.";
+
+        }
+
+    });
+
+});
+
+// Újrakezdés
+document.getElementById("reset").addEventListener("click", () => {
+
+    selected = false;
+
+    resetActive();
+
+    left.classList.remove("selected");
+    right.classList.remove("selected");
+
+    statusText.textContent =
+        "Nézz valamelyik ikonra!";
+
+    message.textContent = "";
+
+});
+
+// Indítás
 document.getElementById("start")
     .addEventListener("click", startTracking);
 
+// Ha a tekintetadat megszűnik
+setInterval(() => {
+
+    if (
+        running &&
+        !selected &&
+        active &&
+        Date.now() - lastGazeTime > 500
+    ) {
+
+        resetActive();
+
+        statusText.textContent =
+            "Nem érzékelhető tekintet. Nézz a képernyőre!";
+
+    }
+
+}, 200);
+
+// Leállítás
+window.addEventListener("beforeunload", () => {
+
+    if (running && window.webgazer) {
+        webgazer.end();
+    }
+
+});
+
 </script>
+
 </body>
 </html>
